@@ -1,0 +1,37 @@
+@import "tailwindcss";
+body {
+  font-family: "Poppins", sans-serif;
+}
+.app-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #0f5fc2 #f3f4f6;
+}
+
+.app-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.app-scrollbar::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 9999px;
+}
+
+.app-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, rgba(15, 95, 194, 1), rgba(3, 186, 107, 1));
+  border-radius: 9999px;
+}
+
+.app-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, rgba(13, 83, 170, 1), rgba(2, 160, 92, 1));
+}
+
+.app-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.app-scrollbar::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
