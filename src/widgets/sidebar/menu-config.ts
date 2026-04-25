@@ -8,7 +8,15 @@ import {
   Settings,
   Shield,
 } from "lucide-react";
-import type { MenuItem } from "../../shared/types/menu";
+import type { LucideIcon } from "lucide-react";
+export type UserRole = "super_admin" | "region_admin" | "colony_admin";
+export type MenuItem = {
+  label: string;
+  path: string;
+  icon: LucideIcon;
+  roles: UserRole[];
+};
+
 
 export const menuItems: MenuItem[] = [
   {

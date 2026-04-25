@@ -17,7 +17,7 @@ type BarItem = {
 type RegionOverviewCardsProps = {
   doughnutTitle: string;
   doughnutTableHeader: string;
-  doughnutTotalValue: number | string;
+  doughnutTotalValue: number ;
   doughnutItems: DoughnutItem[];
 
   barTitle: string;

@@ -29,6 +29,11 @@ type UniversalFiltersProps = {
   onSubmit?: () => void;
   submitDisabled?: boolean;
   submitLoading?: boolean;
+
+  dateValue?: string;
+  onDateChange?: (value: string) => void;
+  timeValue?: string;
+  onTimeChange?: (value: string) => void;
 };
 
 function SingleSelect({ item }: { item: FilterSelectItem }) {
