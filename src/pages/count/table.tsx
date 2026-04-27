@@ -21,6 +21,7 @@ export type TableItem = {
   total: number;
   totalAll: number;
   present: number;
+  pending: number
   notSent: number;
 };
 
@@ -150,6 +151,7 @@ console.log(objectLevelItems);
         status: item.status_label || statusInfo.label,
         statusColor: statusInfo.color,
         total,
+        pending,
         totalAll: total,
         present,
         notSent,

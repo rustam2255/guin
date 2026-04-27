@@ -85,7 +85,8 @@ export default function DashboardPage() {
 
 
   const objectTypeCards = transformObjectTypeCards(objectTypeData);
-
+  console.log(objectTypeData);
+  
 
 
   const genderStatsItems = transformGenderStatsItems(genderData, {
@@ -110,7 +111,7 @@ export default function DashboardPage() {
           : [];
 
       return items.map((item, index: number) => ({
-        label: item.name,
+        label: item.object_type?.name ?? "Noma'lum",
         value: item.total_count ?? 0,
         color: colors[index % colors.length],
       }));

@@ -1,4 +1,4 @@
-import {  ChevronDown } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useFilterOptions } from "../../../shared/hooks/use-filter-options";
 import { useDashboardFiltersStore } from "../../../shared/store/dashboard-filters.store";
@@ -178,12 +178,22 @@ export default function DashboardFiltersBar() {
     return "";
   }, [draftFilters.colonyId, colonyOptions]);
 
+  const getColonyId = (item: any): string => {
+    return String(
+      item.colony_id ??
+      item.colony?.id ??
+      item.colony ??
+      ""
+    );
+  };
+
   const scopedObjects = useMemo(() => {
     if (!selectedColonyId) return [];
 
-    return objects.filter((item) => String(item.colony_id) === selectedColonyId);
+    return objects.filter(
+      (item) => getColonyId(item) === selectedColonyId
+    );
   }, [objects, selectedColonyId]);
-
   const objectTypeOptions: SelectOption[] = useMemo(() => {
     if (!selectedColonyId) return [];
 

@@ -52,9 +52,9 @@ const StatusTable = ({ data }: Props) => {
               </div>
 
               <div className={`${columnClass} font-semibold`}>
-                <span className="text-red-500">{item.notSent}</span>
+                <span className="text-green-500">{item.present}</span>
                 <span className="mx-1 text-gray-400">/</span>
-                <span className="text-green-600">{item.totalAll}</span>
+                <span className="text-blue-600">{item.totalAll}</span>
               </div>
 
               <div className={`${columnClass} font-semibold ${item.statusColor}`}>
