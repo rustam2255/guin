@@ -28,11 +28,8 @@ export default function Sidebar() {
 
   const { regions, provinces, isLoading } = useFilterOptions();
 
-  const {
-    draftFilters,
-    setRegionAndApply,
-    setRegionProvinceAndApply,
-  } = useDashboardFiltersStore();
+  const { draftFilters, setRegionAndApply, setRegionProvinceAndApply } =
+    useDashboardFiltersStore();
 
   const staticMenuItems = [
     { label: "Dashboard", path: "/dashboard", icon: <KeyRound size={18} /> },
@@ -59,15 +56,18 @@ export default function Sidebar() {
   }, [regions, provinces]);
 
   useEffect(() => {
-    const currentOpen: Record<string, boolean> = {};
+    const activeRegion = regionMenus.find(
+      (item) => draftFilters.regionId === item.regionId
+    );
 
-    regionMenus.forEach((item) => {
-      if (draftFilters.regionId === item.regionId) {
-        currentOpen[item.label] = true;
-      }
+    if (!activeRegion) {
+      setOpenMenus({});
+      return;
+    }
+
+    setOpenMenus({
+      [activeRegion.label]: true,
     });
-
-    setOpenMenus((prev) => ({ ...prev, ...currentOpen }));
   }, [draftFilters.regionId, regionMenus]);
 
   useEffect(() => {
@@ -82,11 +82,7 @@ export default function Sidebar() {
   }, []);
 
   useEffect(() => {
-    if (mobileOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
+    document.body.style.overflow = mobileOpen ? "hidden" : "";
 
     return () => {
       document.body.style.overflow = "";
@@ -94,10 +90,17 @@ export default function Sidebar() {
   }, [mobileOpen]);
 
   const toggleMenu = (label: string) => {
-    setOpenMenus((prev) => ({
-      ...prev,
-      [label]: !prev[label],
-    }));
+    setOpenMenus((prev) => {
+      const isCurrentlyOpen = !!prev[label];
+
+      if (isCurrentlyOpen) {
+        return {};
+      }
+
+      return {
+        [label]: true,
+      };
+    });
   };
 
   const closeMobileSidebar = () => {
@@ -107,10 +110,9 @@ export default function Sidebar() {
   const handleRegionClick = (regionId: string, label: string) => {
     setRegionAndApply(regionId);
 
-    setOpenMenus((prev) => ({
-      ...prev,
+    setOpenMenus({
       [label]: true,
-    }));
+    });
 
     navigate(`/dashboard?region=${regionId}`);
     closeMobileSidebar();
@@ -123,10 +125,9 @@ export default function Sidebar() {
   ) => {
     setRegionProvinceAndApply(regionId, provinceId);
 
-    setOpenMenus((prev) => ({
-      ...prev,
+    setOpenMenus({
       [label]: true,
-    }));
+    });
 
     navigate(`/dashboard?region=${regionId}&province=${provinceId}`);
     closeMobileSidebar();
@@ -193,9 +194,9 @@ export default function Sidebar() {
               className={`
                 flex items-center justify-between rounded-xl font-medium transition-all duration-200
                 px-3 py-2.5 text-[14px]
-                sm:px-3.5  sm:text-[15px]
-                lg:px-4  lg:text-[16px]
-                2xl:px-5 2 2xl:text-[17px]
+                sm:px-3.5 sm:text-[15px]
+                lg:px-4 lg:text-[16px]
+                2xl:px-5 2xl:text-[17px]
                 ${isActive ? activeClass : inactiveClass}
               `}
             >
@@ -203,6 +204,7 @@ export default function Sidebar() {
                 {item.icon}
                 <span className="truncate">{item.label}</span>
               </div>
+
               {isActive && <ChevronRight size={18} className="shrink-0" />}
             </Link>
           );
@@ -215,7 +217,7 @@ export default function Sidebar() {
         ) : (
           regionMenus.map((item) => {
             const isActive = draftFilters.regionId === item.regionId;
-            const isOpen = openMenus[item.label];
+            const isOpen = !!openMenus[item.label];
 
             return (
               <div key={item.regionId}>
@@ -225,7 +227,7 @@ export default function Sidebar() {
                     px-3 py-2.5 text-[14px]
                     sm:px-3.5 sm:text-[15px]
                     lg:px-4 lg:text-[16px]
-                    2xl:px-5  2xl:text-[17px]
+                    2xl:px-5 2xl:text-[17px]
                     ${isActive ? activeClass : inactiveClass}
                   `}
                 >
@@ -291,6 +293,7 @@ export default function Sidebar() {
                             `}
                           >
                             <span className="truncate">{child.label}</span>
+
                             {childActive && (
                               <ChevronRight size={16} className="shrink-0" />
                             )}
@@ -310,7 +313,6 @@ export default function Sidebar() {
 
   return (
     <>
-    
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
@@ -327,10 +329,13 @@ export default function Sidebar() {
         onClick={closeMobileSidebar}
         className={`
           fixed inset-0 z-[60] bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden
-          ${mobileOpen ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"}
+          ${
+            mobileOpen
+              ? "pointer-events-auto opacity-100"
+              : "pointer-events-none opacity-0"
+          }
         `}
       />
-
 
       <aside
         className={`
@@ -342,10 +347,9 @@ export default function Sidebar() {
         {renderMenuContent()}
       </aside>
 
-     
       <aside
         className="
-           app-scrollbar sticky top-0 hidden h-screen shrink-0 overflow-y-auto border-r border-gray-200 bg-white
+          app-scrollbar sticky top-0 hidden h-screen shrink-0 overflow-y-auto border-r border-gray-200 bg-white
           lg:block lg:w-[280px]
           xl:w-[300px]
           2xl:w-[340px]

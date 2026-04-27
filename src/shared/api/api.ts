@@ -1,5 +1,5 @@
 import axios, { AxiosError, type InternalAxiosRequestConfig } from "axios";
-import { API_URL, $axios } from "./axios";
+import { $axios, getApiBaseUrl } from "./axios";
 import { useAuthStore } from "../../entities/auth/model/auth.store";
 
 type RetryableRequestConfig = InternalAxiosRequestConfig & {
@@ -12,12 +12,14 @@ type RefreshResponse = {
 };
 
 const $api = axios.create({
-  baseURL: API_URL,
+  baseURL: getApiBaseUrl(),
   withCredentials: false,
 });
 
 $api.interceptors.request.use((config) => {
   const token = useAuthStore.getState().accessToken;
+
+  config.baseURL = getApiBaseUrl();
 
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
@@ -39,11 +41,16 @@ $api.interceptors.response.use(
     const { refreshToken, setTokens, logout } = useAuthStore.getState();
 
     const isRefreshRequest =
-      originalRequest.url?.includes("/employes/token/refresh/");
+      originalRequest.url?.includes("/employes/token/refresh/") ||
+      originalRequest.url?.includes("employes/token/refresh/");
+
     const isLoginRequest =
-      originalRequest.url?.includes("/employes/login/");
+      originalRequest.url?.includes("/employes/login/") ||
+      originalRequest.url?.includes("employes/login/");
+
     const isLogoutRequest =
-      originalRequest.url?.includes("/employes/logout/");
+      originalRequest.url?.includes("/employes/logout/") ||
+      originalRequest.url?.includes("employes/logout/");
 
     if (
       status === 401 &&
@@ -56,6 +63,8 @@ $api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
+        $axios.defaults.baseURL = getApiBaseUrl();
+
         const { data } = await $axios.post<RefreshResponse>(
           "employes/token/refresh/",
           {
@@ -72,6 +81,7 @@ $api.interceptors.response.use(
         });
 
         originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+        originalRequest.baseURL = getApiBaseUrl();
 
         return $api(originalRequest);
       } catch (refreshError) {

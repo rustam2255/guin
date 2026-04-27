@@ -1,0 +1,24 @@
+{
+  "common": {
+    "search": "Qidirish",
+    "reset": "Tozalash",
+    "apply": "Qo‘llash",
+    "loading": "Yuklanmoqda...",
+    "error": "Xatolik yuz berdi"
+  },
+  "auth": {
+    "login": "Kirish",
+    "logout": "Chiqish",
+    "username": "Foydalanuvchi nomi",
+    "password": "Parol"
+  },
+  "menu": {
+    "dashboard": "Dashboard",
+    "regions": "Mintaqalar",
+    "provinces": "Viloyatlar",
+    "colonies": "Koloniyalar",
+    "users": "Foydalanuvchilar",
+    "settings": "Sozlamalar",
+    "profile": "Profil"
+  }
+}

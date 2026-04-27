@@ -1,4 +1,4 @@
-import { Building2, ChevronDown } from "lucide-react";
+import {  ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useFilterOptions } from "../../../shared/hooks/use-filter-options";
 import { useDashboardFiltersStore } from "../../../shared/store/dashboard-filters.store";
@@ -351,75 +351,72 @@ export default function DashboardFiltersBar() {
         )}
 
         {showObjectType && (
-          <div className="space-y-3 xl:col-span-1">
-            <div className="space-y-2">
-              <p className="text-sm font-medium text-[#6B7280]">Obyekt turi</p>
-              <CustomSelect
-                value={selectedObjectTypeId}
-                onChange={(value) => {
-                  handleObjectTypeChange(value);
-                  setIsPlaceObjectOpen(Boolean(value));
-                }}
-                options={objectTypeOptions}
-                placeholder="Obyekt turini tanlang"
-                disabled={!selectedColonyId}
-              />
-            </div>
+          <div className="space-y-2 xl:col-span-1">
+            <p className="text-sm font-medium text-[#6B7280]">Obyekt turi</p>
+
+            <CustomSelect
+              value={selectedObjectTypeId}
+              onChange={(value) => {
+                handleObjectTypeChange(value);
+                setIsPlaceObjectOpen(Boolean(value));
+              }}
+              options={objectTypeOptions}
+              placeholder="Obyekt turini tanlang"
+              disabled={!selectedColonyId}
+            />
 
             {selectedObjectTypeId && (
-              <div
-                className="
-              rounded-2xl border border-[#E5E7EB] bg-[#F8FAFC]
-              p-3 sm:p-4 transition-all
-            "
-              >
-                <div className="mb-3 flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#DBEAFE]">
-                    <Building2 size={18} className="text-[#2563EB]" />
-                  </div>
-
-                  <div className="min-w-0">
-                    <p className="text-sm font-semibold text-[#111827]">
-                      Shartnoma obyektlari
-                    </p>
-                    <p className="text-xs text-[#6B7280]">
-                      Tanlangan obyekt turiga tegishli obyektlar
-                    </p>
-                  </div>
-                </div>
-
-                <div
-                  className={`overflow-hidden transition-all duration-300 ${isPlaceObjectOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
-                    }`}
+              <div className="relative">
+                <button
+                  type="button"
+                  onClick={() => setIsPlaceObjectOpen((prev) => !prev)}
+                  className="
+            mt-2 flex h-12 w-full items-center justify-between rounded-xl
+            border border-[#D9D9D9] bg-white px-4 text-left text-[15px]
+            text-[#2B2B2B] transition hover:border-[#3B82F6]
+          "
                 >
-                  <CustomSelect
-                    value={selectedPlaceObjectId}
-                    onChange={setPlaceObjectId}
-                    options={placeObjectOptions}
-                    placeholder="Shartnoma obyektini tanlang"
-                    disabled={!selectedObjectTypeId}
+                  <span className={selectedPlaceObjectId ? "text-[#2B2B2B]" : "text-[#9CA3AF]"}>
+                    {placeObjectOptions.find((item) => item.value === selectedPlaceObjectId)?.label ||
+                      "Shartnoma obyektini tanlang"}
+                  </span>
+
+                  <ChevronDown
+                    size={18}
+                    className={`text-[#6B7280] transition ${isPlaceObjectOpen ? "rotate-180" : ""
+                      }`}
                   />
+                </button>
 
-                  {placeObjectOptions.length === 0 && (
-                    <p className="mt-3 text-xs text-[#9CA3AF]">
-                      Bu obyekt turi uchun shartnoma obyektlari topilmadi.
-                    </p>
-                  )}
-                </div>
-
-                <div className="mt-3 flex justify-end">
-                  <button
-                    type="button"
-                    onClick={() => setIsPlaceObjectOpen((prev) => !prev)}
-                    className="
-                  inline-flex items-center rounded-xl border border-[#D1D5DB]
-                  bg-white px-3 py-2 text-sm font-medium text-[#374151]
-                  transition hover:bg-[#F3F4F6]
-                "
-                  >
-                    {isPlaceObjectOpen ? "Yopish" : "Ochish"}
-                  </button>
-                </div>
+                {isPlaceObjectOpen && (
+                  <div className="absolute left-0 right-0 top-[58px] z-50 max-h-[220px] overflow-y-auto rounded-xl border border-[#E5E7EB] bg-white p-1 shadow-lg">
+                    {placeObjectOptions.length === 0 ? (
+                      <div className="px-3 py-2 text-sm text-[#9CA3AF]">
+                        Bu obyekt turi uchun shartnoma obyektlari topilmadi.
+                      </div>
+                    ) : (
+                      placeObjectOptions.map((option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() => {
+                            setPlaceObjectId(option.value);
+                            setIsPlaceObjectOpen(false);
+                          }}
+                          className={`
+                    w-full rounded-lg px-3 py-2 text-left text-sm transition
+                    ${selectedPlaceObjectId === option.value
+                              ? "bg-[#EFF6FF] font-semibold text-[#2563EB]"
+                              : "text-[#374151] hover:bg-[#F3F4F6]"
+                            }
+                  `}
+                        >
+                          {option.label}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -431,17 +428,17 @@ export default function DashboardFiltersBar() {
             onClick={handleApply}
             className="
           h-12 rounded-2xl bg-[#2563EB] px-5 text-sm font-semibold text-white
-          shadow-sm transition hover:bg-[#1D4ED8]
+          shadow-sm cursor-pointer transition hover:bg-[#1D4ED8]
         "
           >
-            Yuborish
+            Qidirish
           </button>
 
           <button
             type="button"
             onClick={handleReset}
             className="
-          h-12 rounded-2xl border border-[#D1D5DB] bg-white px-5
+          h-12 rounded-2xl border cursor-pointer border-[#D1D5DB] bg-white px-5
           text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]
         "
           >

@@ -88,18 +88,18 @@ export default function LoginPage() {
         />
       </div>
 
-   
+
 
       <div
         className="
-        relative z-10 w-full
-        max-w-[520px]
-        sm:max-w-[560px]
-        lg:max-w-[600px]
-        2xl:max-w-[680px]
-        "
+  relative z-10 w-full
+  max-w-[430px]
+  sm:max-w-[460px]
+  lg:max-w-[480px]
+  2xl:max-w-[520px]
+  "
       >
-      
+
 
         <div
           className="
@@ -112,23 +112,22 @@ export default function LoginPage() {
             src="/rename.png"
             alt="Logo"
             className="
-            object-contain
-            h-[80px] w-[80px]
-            sm:h-[90px] sm:w-[90px]
-            lg:h-[100px] lg:w-[100px]
-            2xl:h-[120px] 2xl:w-[120px]
-
-            "
+  object-contain
+  h-[70px] w-[70px]
+  sm:h-[78px] sm:w-[78px]
+  lg:h-[86px] lg:w-[86px]
+  2xl:h-[100px] 2xl:w-[100px]
+  "
           />
 
           <h1
             className="
-            font-bold leading-[1.05] text-white
-            text-[36px]
-            sm:text-[42px]
-            lg:text-[46px]
-            2xl:text-[56px]
-            "
+  font-bold leading-[1.05] text-white
+  text-[32px]
+  sm:text-[36px]
+  lg:text-[40px]
+  2xl:text-[48px]
+  "
           >
             Raqamli
             <br />
@@ -136,9 +135,8 @@ export default function LoginPage() {
           </h1>
         </div>
 
-      
 
-        <div className="space-y-6 sm:space-y-7 2xl:space-y-8">
+        <div className="space-y-4 sm:space-y-5 2xl:space-y-6">
 
           <input
             type="text"
@@ -146,17 +144,17 @@ export default function LoginPage() {
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             className="
-            w-full rounded-2xl
-            border-2 border-white/80
-            bg-transparent
-            text-white placeholder:text-white
-            outline-none
+w-full rounded-xl
+border-2 border-white/80
+bg-transparent
+text-white placeholder:text-white/90
+outline-none
 
-            h-[56px] px-4 text-lg
-            sm:h-[60px] sm:px-5 sm:text-xl
-            lg:h-[64px]
-            2xl:h-[72px] 2xl:text-[22px]
-            "
+h-[48px] px-4 text-base
+sm:h-[50px] sm:px-5 sm:text-[17px]
+lg:h-[52px]
+2xl:h-[56px] 2xl:text-lg
+"
           />
 
           <input
@@ -165,17 +163,17 @@ export default function LoginPage() {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="
-            w-full rounded-2xl
-            border-2 border-white/80
-            bg-transparent
-            text-white placeholder:text-white
-            outline-none
+w-full rounded-xl
+border-2 border-white/80
+bg-transparent
+text-white placeholder:text-white/90
+outline-none
 
-            h-[56px] px-4 text-lg
-            sm:h-[60px] sm:px-5 sm:text-xl
-            lg:h-[64px]
-            2xl:h-[72px] 2xl:text-[22px]
-            "
+h-[48px] px-4 text-base
+sm:h-[50px] sm:px-5 sm:text-[17px]
+lg:h-[52px]
+2xl:h-[56px] 2xl:text-lg
+"
           />
 
           {localError && (
@@ -190,18 +188,18 @@ export default function LoginPage() {
             onClick={handleLogin}
             disabled={isPending}
             className="
-            w-full rounded-2xl
-            bg-[#e9e9e9]
-            font-semibold text-[#2d57d3]
-            transition hover:opacity-95
+w-full rounded-xl
+bg-[#e9e9e9]
+font-semibold text-[#2d57d3]
+transition hover:opacity-95
 
-            h-[56px] text-lg
-            sm:h-[60px] sm:text-xl
-            lg:h-[64px]
-            2xl:h-[72px] 2xl:text-[24px]
+h-[48px] text-base
+sm:h-[50px] sm:text-[17px]
+lg:h-[52px]
+2xl:h-[56px] 2xl:text-lg
 
-            disabled:cursor-not-allowed disabled:opacity-70
-            "
+disabled:cursor-not-allowed disabled:opacity-70
+"
           >
             {isPending ? "KIRILMOQDA..." : "LOGIN"}
           </button>

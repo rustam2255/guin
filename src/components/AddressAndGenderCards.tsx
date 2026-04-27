@@ -22,7 +22,7 @@ type DoughnutCardProps = {
   title: string;
   tableHeader: string;
   items: DoughnutLegendItem[];
-  totalValue?: number;
+  totalValue?: number ;
   buttonText?: string;
 };
 
