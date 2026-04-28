@@ -9,6 +9,7 @@ import ProtectedRoute from "./protected-route";
 
 import RegistryIdPage from "../../pages/registery/registerId";
 import { useCurrentUser } from "../../shared/hooks/use-current-user";
+import InspectionDetailPage from "../../pages/count/inspection-detail";
 
 export default function AppRouter() {
   const { isAuthenticated } = useCurrentUser();
@@ -48,6 +49,14 @@ export default function AppRouter() {
           element={
             <ProtectedRoute>
               <TablePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/inspection/:attendanceTimeId"
+          element={
+            <ProtectedRoute>
+              <InspectionDetailPage />
             </ProtectedRoute>
           }
         />

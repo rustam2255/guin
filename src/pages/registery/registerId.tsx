@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 import DashboardLayout from "../../app/layout/dashboard-layout";
 import type { PrisonerListItem } from "../../entities/prisoners/types/prisoner.types";
 
@@ -14,39 +15,39 @@ function formatDate(value?: string | null) {
   return new Date(value).toLocaleDateString("uz-UZ");
 }
 
-function getText(value: unknown) {
-  if (value === null || value === undefined || value === "") return "-";
-  if (typeof value === "boolean") return value ? "Ha" : "Yo‘q";
-  return String(value);
-}
-
 function getStatusText(status: PrisonerListItem["status"]) {
   if (!status) return "-";
-
   if (typeof status === "string") return status;
-
   return status.name || "-";
 }
 
 export default function RegistryIdPage() {
+  const { t } = useTranslation();
+
   const { id } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
 
   const prisoner = (location.state as LocationState | null)?.prisoner;
-
   const [activeTab, setActiveTab] = useState<TabKey>("personal");
+
+  const getText = (value: unknown) => {
+    if (value === null || value === undefined || value === "") return "-";
+    if (typeof value === "boolean") {
+      return value ? t("common.yes") : t("common.no");
+    }
+    return String(value);
+  };
 
   const tabs = useMemo(
     () => [
-      { key: "personal" as TabKey, label: "Shaxsiy ma’lumotlar" },
-      { key: "family" as TabKey, label: "Oila a’zolari" },
-      { key: "court" as TabKey, label: "Sudlanganlik" },
-      { key: "crime" as TabKey, label: "Hozirgi jinoyat" },
-      { key: "address" as TabKey, label: "Manzillar" },
-      { key: "other" as TabKey, label: "Boshqalar" },
+      { key: "personal" as TabKey, label: t("registry_detail.tabs.personal") },
+      { key: "family" as TabKey, label: t("registry_detail.tabs.family") },
+      { key: "court" as TabKey, label: t("registry_detail.tabs.court") },
+      { key: "crime" as TabKey, label: t("registry_detail.tabs.crime") },
+      { key: "other" as TabKey, label: t("registry_detail.tabs.other") },
     ],
-    []
+    [t]
   );
 
   const currentContent = useMemo(() => {
@@ -55,24 +56,24 @@ export default function RegistryIdPage() {
     switch (activeTab) {
       case "personal":
         return [
-          { title: "F.I.O", text: prisoner.full_name },
-          { title: "Jinsi", text: prisoner.gender_label || prisoner.gender },
-          { title: "Tug‘ilgan sana", text: formatDate(prisoner.birth_date) },
-          { title: "Fuqaroligi", text: prisoner.citizenship },
+          { title: t("registry.full_name"), text: prisoner.full_name },
+          { title: t("dashboard.gender"), text: prisoner.gender_label || prisoner.gender },
+          { title: t("registry.birth_date"), text: formatDate(prisoner.birth_date) },
+          { title: t("registry_detail.fields.citizenship"), text: prisoner.citizenship },
           { title: "PINFL", text: prisoner.pinfl },
-          { title: "Pasport", text: prisoner.passport_id },
-          { title: "Millati", text: prisoner.nationality },
-          { title: "Telefon", text: prisoner.phone },
+          { title: t("registry_detail.fields.passport"), text: prisoner.passport_id },
+          { title: t("registry_detail.fields.nationality"), text: prisoner.nationality },
+          { title: t("profile.phone"), text: prisoner.phone },
         ];
 
       case "family":
         return [
           {
-            title: "Oila a’zolari haqidagi ma’lumot",
+            title: t("registry_detail.fields.family_info"),
             text: prisoner.family_info,
           },
           {
-            title: "Favqulodda aloqadagi shaxs",
+            title: t("registry_detail.fields.emergency_contact_person"),
             text: prisoner.emergency_contact_person,
           },
         ];
@@ -80,15 +81,15 @@ export default function RegistryIdPage() {
       case "court":
         return [
           {
-            title: "Jazo boshlanish sanasi",
+            title: t("registry_detail.fields.date_of_sentencing"),
             text: formatDate(prisoner.date_of_sentencing),
           },
           {
-            title: "Jazo tugash sanasi",
+            title: t("registry_detail.fields.sentence_end_date"),
             text: formatDate(prisoner.sentence_end_date),
           },
           {
-            title: "Qochish urinishlari",
+            title: t("registry_detail.fields.escape_attempts"),
             text: prisoner.escape_attempts,
           },
         ];
@@ -96,81 +97,69 @@ export default function RegistryIdPage() {
       case "crime":
         return [
           {
-            title: "Xavf darajasi",
+            title: t("registry_detail.fields.danger_level"),
             text: prisoner.danger_level_label || prisoner.danger_level,
           },
           {
-            title: "Psixologik baholash",
+            title: t("registry_detail.fields.psychological_evaluation"),
             text: prisoner.psychological_evaluation,
           },
           {
-            title: "Holati",
-            text: prisoner.active_prisoner ? "Faol" : "Nofaol",
+            title: t("registry_detail.fields.condition"),
+            text: prisoner.active_prisoner
+              ? t("status.active")
+              : t("status.inactive"),
           },
         ];
 
       case "address":
         return [
-          { title: "Tug‘ilgan joyi", text: prisoner.birthplace },
+          { title: t("registry_detail.fields.birthplace"), text: prisoner.birthplace },
           {
-            title: "Doimiy yashash joyi",
+            title: t("registry_detail.fields.permanent_residence"),
             text: prisoner.permanent_residence,
           },
           {
-            title: "Ro‘yxatdan o‘tgan manzil",
+            title: t("registry_detail.fields.register_add"),
             text: prisoner.register_add,
           },
           {
-            title: "Oxirgi yashash manzili",
+            title: t("registry_detail.fields.last_add"),
             text: prisoner.last_add,
           },
-          {
-            title: "Mintaqa",
-            text: prisoner.region?.name,
-          },
-          {
-            title: "Viloyat",
-            text: prisoner.province?.name,
-          },
-          {
-            title: "Koloniya",
-            text: prisoner.colony?.name,
-          },
-          {
-            title: "Shartnoma obyekti",
-            text: prisoner.place_object?.name,
-          },
+          { title: t("filters.region"), text: prisoner.region?.name },
+          { title: t("filters.province"), text: prisoner.province?.name },
+          { title: t("filters.colony"), text: prisoner.colony?.name },
+          { title: t("registry.object"), text: prisoner.place_object?.name },
         ];
 
       default:
         return [
           { title: "FaceID", text: prisoner.faceid },
-          { title: "Barmoq izi", text: prisoner.fingerprint },
-          { title: "Nogironlik", text: prisoner.disability },
+          { title: t("registry_detail.fields.fingerprint"), text: prisoner.fingerprint },
+          { title: t("registry_detail.fields.disability"), text: prisoner.disability },
           {
-            title: "Yaratilgan vaqt",
+            title: t("registry_detail.fields.created_at"),
             text: formatDate(prisoner.created_at),
           },
           {
-            title: "Yangilangan vaqt",
+            title: t("registry_detail.fields.updated_at"),
             text: formatDate(prisoner.updated_at),
           },
         ];
     }
-  }, [activeTab, prisoner]);
+  }, [activeTab, prisoner, t]);
 
   if (!prisoner || String(prisoner.id) !== String(id)) {
     return (
       <DashboardLayout>
         <div className="rounded-2xl bg-white p-6 shadow-sm">
           <p className="text-lg font-semibold text-red-500">
-            Mahkum ma’lumoti topilmadi
+            {t("registry_detail.not_found_title")}
           </p>
 
           <p className="mt-2 text-sm leading-6 text-gray-500">
-            Bu sahifaga to‘g‘ridan-to‘g‘ri kirilganda detail API bo‘lmagani
-            uchun ma’lumotni olish imkoni yo‘q. Ro‘yxatdan mahkumni tanlab
-            kiring.
+            {t("registry_detail.not_found_description")}
           </p>
 
           <button
@@ -178,7 +167,7 @@ export default function RegistryIdPage() {
             onClick={() => navigate("/registry")}
             className="mt-4 rounded-xl bg-blue-600 px-5 py-2 text-white"
           >
-            Ro‘yxatga qaytish
+            {t("registry_detail.back_to_registry")}
           </button>
         </div>
       </DashboardLayout>

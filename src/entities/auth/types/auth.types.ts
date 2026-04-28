@@ -2,7 +2,11 @@ export type LoginRequest = {
   phone: string
   password: string
 }
-
+export type UserRole =
+  | "SUPERADMIN"
+  | "MINTAQA_ADMIN"
+  | "KALONIYA_ADMIN"
+  | "PROVINCEADMIN";
 export type LoginResponse = {
   access: string
   refresh: string

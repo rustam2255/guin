@@ -1,6 +1,6 @@
 import uz from "./locales/uz.json";
 import ru from "./locales/ru.json";
-import uzCryl from "./locales/uz-cyrl.json";
+import uzCyrl from "./locales/uz-cyrl.json";
 
 export const resources = {
   uz: {
@@ -9,8 +9,8 @@ export const resources = {
   ru: {
     translation: ru,
   },
-  "uz-cyrl": {
-    translation: uzCryl,
+  "uz-Cyrl": {
+    translation: uzCyrl,
   },
 } as const;
 
@@ -20,6 +20,6 @@ export const DEFAULT_LANGUAGE: AppLanguage = "uz";
 
 export const LANGUAGES: { code: AppLanguage; label: string }[] = [
   { code: "uz", label: "O‘zbekcha" },
-  { code: "uz-cyrl", label: "Ўзбекча" },
+  { code: "uz-Cyrl", label: "Ўзбекча" },
   { code: "ru", label: "Русский" },
 ];

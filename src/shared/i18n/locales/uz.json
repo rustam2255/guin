@@ -1,24 +1,147 @@
 {
+  "sidebar": {
+    "title": "Raqamli Nazoratchi",
+    "dashboard": "Dashboard",
+    "inspection": "Sanoq",
+    "registry": "Ro‘yxat"
+  },
   "common": {
-    "search": "Qidirish",
-    "reset": "Tozalash",
-    "apply": "Qo‘llash",
-    "loading": "Yuklanmoqda...",
+    "loading": "Ma’lumotlar yuklanmoqda...",
+    "not_found": "Ma’lumot topilmadi",
+    "total": "Jami",
+    "prev": "Oldingi",
+    "next": "Keyingi",
+    "yes": "Ha",
+    "no": "Yo‘q",
+     "back": "Orqaga",
+    "all": "Barchasi",
     "error": "Xatolik yuz berdi"
   },
-  "auth": {
-    "login": "Kirish",
-    "logout": "Chiqish",
-    "username": "Foydalanuvchi nomi",
-    "password": "Parol"
+    "attendance_status": {
+    "present": "Qatnashgan",
+    "missed": "Kelmagan",
+    "pending": "Kutilmoqda"
   },
-  "menu": {
-    "dashboard": "Dashboard",
-    "regions": "Mintaqalar",
-    "provinces": "Viloyatlar",
-    "colonies": "Koloniyalar",
-    "users": "Foydalanuvchilar",
-    "settings": "Sozlamalar",
-    "profile": "Profil"
+  "inspection_detail": {
+    "title": "Yo‘qlama detallari",
+    "selected_id": "Tanlangan yo‘qlama ID",
+    "object": "Obyekt",
+    "date_time": "Sana / vaqt",
+    "search_placeholder": "F.I.O bo‘yicha qidirish",
+    "face_id": "Face ID",
+    "date": "Sana",
+    "recorded_at": "Qatnashgan vaqt"
+  },
+
+  
+  "filters": {
+    "region": "Mintaqa",
+    "province": "Viloyat",
+    "colony": "Koloniya",
+    "object_type": "Obyekt turi",
+    "select_region": "Mintaqani tanlang",
+    "select_province": "Viloyatni tanlang",
+    "select_colony": "Koloniyani tanlang",
+    "select_object_type": "Obyekt turini tanlang",
+    "select_place_object": "Obyektni tanlang",
+    "search": "Qidirish",
+    "reset": "Tozalash"
+  },
+  "stats": {
+    "active": "Borlar",
+    "total": "Umumiy"
+  },
+  "inspection": {
+    "day": "Kunduzgi sanoq",
+    "night": "Tungi sanoq",
+    "emergency": "Favqulodda sanoq"
+  },
+  "table": {
+    "id": "ID",
+    "region": "Mintaqa",
+    "province": "Viloyat",
+    "colony_address": "Manzil koloniya",
+    "object": "Shartnoma obyekti",
+    "time": "Vaqt",
+    "count": "Borlar/Jami",
+    "status": "Status",
+     "error": "Ошибка при загрузке списка заключённых"
+  },
+  "status": {
+    "completed": "Tugallangan",
+    "active": "Faol",
+    "inactive": "Nofaol"
+  },
+  "registry": {
+    "search_placeholder": "Qidirish",
+    "download": "Yuklash",
+    "prisoners": "Mahkumlar",
+    "full_name": "F.I.O",
+    "birth_date": "Tug‘ilgan sana",
+    "colony": "Koloniya",
+    "object": "Shartnoma obyekti",
+    "start_date": "Jazo boshlangan sana",
+    "passport": "Pasport seriyasi"
+  },
+  "dashboard": {
+    "total": "Jami",
+    "men": "Erkaklar",
+    "women": "Ayollar",
+     "by_region": "Mintaqalar kesimida",
+ "prisoners": "Mahkumlar",
+  "by_object_type": "Obyekt turlari kesimida",
+    "by_status": "Mahkumlar status bo‘yicha",
+    "by_gender": "Jinsi bo‘yicha ma'lumot",
+    "by_object": "Mahkumlar obyektlar kesimida",
+    "by_colony": "Koloniyalar kesimida",
+      "other_info": "Mahkumlar haqida boshqa ma'lumotlar",
+    "see_all": "Barchasini ko‘rish",
+    "duty_free": "Dala yer maydonida",
+    "production": "Yordamchi ishlab chiqarishda",
+    "contract_object": "Shartnoma obyektida",
+    "sick": "Kasal",
+     "by_gender_short": "Jinsi bo‘yicha",
+  "gender": "Jinsi"
+  },
+  "profile": {
+    "full_name": "F.I.O",
+    "role": "Lavozim / Rol",
+    "phone": "Telefon raqam",
+    "language": "Til",
+    "logout": "Chiqish"
+  },
+   "registry_detail": {
+    "tabs": {
+      "personal": "Shaxsiy ma’lumotlar",
+      "family": "Oila a’zolari",
+      "court": "Sudlanganlik",
+      "crime": "Hozirgi jinoyat",
+      "other": "Boshqalar"
+    },
+    "fields": {
+      "citizenship": "Fuqaroligi",
+      "passport": "Pasport",
+      "nationality": "Millati",
+      "family_info": "Oila a’zolari haqidagi ma’lumot",
+      "emergency_contact_person": "Favqulodda aloqadagi shaxs",
+      "date_of_sentencing": "Jazo boshlanish sanasi",
+      "sentence_end_date": "Jazo tugash sanasi",
+      "escape_attempts": "Qochish urinishlari",
+      "danger_level": "Xavf darajasi",
+      "psychological_evaluation": "Psixologik baholash",
+      "condition": "Holati",
+      "birthplace": "Tug‘ilgan joyi",
+      "permanent_residence": "Doimiy yashash joyi",
+      "register_add": "Ro‘yxatdan o‘tgan manzil",
+      "last_add": "Oxirgi yashash manzili",
+      "fingerprint": "Barmoq izi",
+      "disability": "Nogironlik",
+      "created_at": "Yaratilgan vaqt",
+      "updated_at": "Yangilangan vaqt"
+    },
+    "not_found_title": "Mahkum ma’lumoti topilmadi",
+    "not_found_description": "Bu sahifaga to‘g‘ridan-to‘g‘ri kirilganda detail API bo‘lmagani uchun ma’lumotni olish imkoni yo‘q. Ro‘yxatdan mahkumni tanlab kiring.",
+    "back_to_registry": "Ro‘yxatga qaytish"
   }
+  
 }

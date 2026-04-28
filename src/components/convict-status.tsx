@@ -9,6 +9,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
@@ -24,14 +25,18 @@ type PrisonStatusChartProps = {
 };
 
 export default function PrisonStatusChart({
-  title = "Mahkumlar status bo‘yicha",
+  title,
   total,
   labels,
   datasets,
 }: PrisonStatusChartProps) {
+  const { t } = useTranslation();
+
   const [screenWidth, setScreenWidth] = useState<number>(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
+
+  const chartTitle = title || t("dashboard.by_status");
 
   useEffect(() => {
     const handleResize = () => setScreenWidth(window.innerWidth);
@@ -47,6 +52,7 @@ export default function PrisonStatusChart({
   const chartHeight = useMemo(() => {
     const perItem = isMobile ? 28 : isTablet ? 34 : isUltraWide ? 44 : 38;
     const base = isMobile ? 30 : 40;
+
     return Math.max(isMobile ? 180 : 240, labels.length * perItem + base);
   }, [labels.length, isMobile, isTablet, isUltraWide]);
 
@@ -54,6 +60,7 @@ export default function PrisonStatusChart({
     if (isMobile) return 8;
     if (isTablet) return 10;
     if (isUltraWide) return 16;
+
     return 12;
   }, [isMobile, isTablet, isUltraWide]);
 
@@ -72,8 +79,12 @@ export default function PrisonStatusChart({
         },
       },
       plugins: {
-        legend: { display: false },
-        tooltip: { enabled: true },
+        legend: {
+          display: false,
+        },
+        tooltip: {
+          enabled: true,
+        },
       },
       scales: {
         x: {
@@ -91,15 +102,19 @@ export default function PrisonStatusChart({
             },
             callback: (value) => {
               const numericValue = Number(value);
+
               if (numericValue === 0) return "0";
               if (numericValue >= 1000) return numericValue / 1000 + "K";
+
               return String(numericValue);
             },
           },
         },
         y: {
           stacked: true,
-          grid: { display: false },
+          grid: {
+            display: false,
+          },
           border: {
             display: false,
           },
@@ -156,7 +171,7 @@ export default function PrisonStatusChart({
             min-[2200px]:text-[18px]
           "
         >
-          {title}
+          {chartTitle}
         </p>
 
         <h2
@@ -174,12 +189,7 @@ export default function PrisonStatusChart({
         </h2>
       </div>
 
-      <div
-        className="w-full"
-        style={{
-          height: `${chartHeight}px`,
-        }}
-      >
+      <div className="w-full" style={{ height: `${chartHeight}px` }}>
         <Bar data={data} options={options} />
       </div>
     </div>

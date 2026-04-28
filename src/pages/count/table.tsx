@@ -1,5 +1,6 @@
 import DashboardLayout from "../../app/layout/dashboard-layout";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import StatusTable from "../../shared/statusTable";
 import { useAuthStore } from "../../entities/auth/model/auth.store";
@@ -7,6 +8,7 @@ import { useAttendanceObjectLevel } from "../../entities/attendance/api/use-atte
 import type { AttendanceTimeType } from "../../entities/attendance/types/attendance.types";
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import DashboardFiltersBar from "../../features/dashboard-filters/ui/dashboard-filters";
+import LoadingSpinner from "../../shared/loading/loading.spinner";
 
 export type TableItem = {
   id: number;
@@ -21,38 +23,10 @@ export type TableItem = {
   total: number;
   totalAll: number;
   present: number;
-  pending: number
+  pending: number;
+   attendanceTimeId: number;
   notSent: number;
 };
-
-const statusMap: Record<string, { label: string; color: string }> = {
-  active: {
-    label: "Faol",
-    color: "text-blue-500",
-  },
-  finished: {
-    label: "Tugatilgan",
-    color: "text-green-600",
-  },
-  scheduled: {
-    label: "Rejalashtirilgan",
-    color: "text-yellow-500",
-  },
-  canceled: {
-    label: "Bekor qilingan",
-    color: "text-red-500",
-  },
-};
-
-const timeTypeCards: {
-  id: AttendanceTimeType | "";
-  count: number;
-  title: string;
-}[] = [
-  { id: "day", count: 1, title: "Kunduzgi sanoq" },
-  { id: "night", count: 2, title: "Tungi sanoq" },
-  { id: "emergency", count: 3, title: "Favqulodda sanoq" },
-];
 
 function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -76,6 +50,8 @@ function formatTimeRange(start?: string | null, end?: string | null) {
 }
 
 const TablePage = () => {
+  const { t } = useTranslation();
+
   const profile = useAuthStore((state) => state.profile);
   const role = profile?.role || "SUPERADMIN";
 
@@ -84,6 +60,35 @@ const TablePage = () => {
   );
 
   const [timeType, setTimeType] = useState<AttendanceTimeType | "">("day");
+
+  const statusMap: Record<string, { label: string; color: string }> = {
+    active: {
+      label: t("status.active"),
+      color: "text-blue-500",
+    },
+    finished: {
+      label: t("status.finished"),
+      color: "text-green-600",
+    },
+    scheduled: {
+      label: t("status.scheduled"),
+      color: "text-yellow-500",
+    },
+    canceled: {
+      label: t("status.canceled"),
+      color: "text-red-500",
+    },
+  };
+
+  const timeTypeCards: {
+    id: AttendanceTimeType | "";
+    count: number;
+    title: string;
+  }[] = [
+      { id: "day", count: 1, title: t("inspection.day") },
+      { id: "night", count: 2, title: t("inspection.night") },
+      { id: "emergency", count: 3, title: t("inspection.emergency") },
+    ];
 
   const objectParams = useMemo(() => {
     return {
@@ -100,11 +105,14 @@ const TablePage = () => {
   ]);
 
   const objectLevelQuery = useAttendanceObjectLevel(role, objectParams);
+  console.log(objectLevelQuery);
+  
   const objectLevelItems = useMemo(() => {
-  return objectLevelQuery.data?.items ?? [];
-}, [objectLevelQuery.data?.items]);
-console.log(objectLevelItems);
-
+    return objectLevelQuery.data?.items ?? [];
+  }, [objectLevelQuery.data?.items]);
+  console.log(objectLevelItems);
+    console.log(objectLevelItems);
+    
   const filteredItems = useMemo(() => {
     return objectLevelItems
       .filter((item) => {
@@ -118,6 +126,7 @@ console.log(objectLevelItems);
         return bTime - aTime;
       });
   }, [objectLevelItems, timeType]);
+console.log(filteredItems);
 
   const tableData: TableItem[] = useMemo(() => {
     return filteredItems.map((item, index) => {
@@ -134,15 +143,16 @@ console.log(objectLevelItems);
         item.display_status || item.attendance_time?.status || "";
 
       const statusInfo = statusMap[statusKey] || {
-        label: item.status_label || "Noma’lum",
+        label: item.status_label || t("status.unknown"),
         color: "text-gray-400",
       };
 
       return {
         id: index + 1,
+         attendanceTimeId: item.attendance_time_id,
         region: item.region?.name || item.region_name || "-",
         province: item.colony?.province_id
-          ? `Viloyat ${item.colony.province_id}`
+          ? `${t("filters.province")} ${item.colony.province_id}`
           : "-",
         colony: item.colony?.name || item.colony_name || "-",
         object: item.object?.name || item.object_name || "-",
@@ -157,14 +167,12 @@ console.log(objectLevelItems);
         notSent,
       };
     });
-  }, [filteredItems]);
+  }, [filteredItems, statusMap, t]);
 
   const notSentCount = useMemo(() => {
     return filteredItems.reduce((sum, item) => {
-      const pending = Number(item.pending_count || 0);
-      const missed = Number(item.missed_count || 0);
-
-      return sum + pending + missed;
+      const present = Number(item.present_count || 0);
+      return sum + present;
     }, 0);
   }, [filteredItems]);
 
@@ -186,11 +194,11 @@ console.log(objectLevelItems);
           <div className="mt-5 flex flex-wrap items-center gap-3 rounded-2xl bg-white px-4 py-5 shadow-sm">
             <div className="flex items-center gap-3">
               <span className="whitespace-nowrap text-[14px] font-medium text-gray-800">
-                Yuborilmaganlar
+                {t("stats.active")}
               </span>
 
               <div className="flex h-10 min-w-[78px] items-center justify-center rounded-lg border border-gray-300 bg-white px-4">
-                <span className="text-[14px] font-bold text-red-500">
+                <span className="text-[14px] font-bold text-green-500">
                   {notSentCount}
                 </span>
               </div>
@@ -198,7 +206,7 @@ console.log(objectLevelItems);
 
             <div className="flex items-center gap-3">
               <span className="whitespace-nowrap text-[14px] font-medium text-gray-800">
-                Umumiy
+                {t("stats.total")}
               </span>
 
               <div className="flex h-10 min-w-[78px] items-center justify-center rounded-lg border border-gray-300 bg-white px-4">
@@ -222,10 +230,9 @@ console.log(objectLevelItems);
                 className={`
                   group flex items-center justify-between rounded-xl border px-4 py-3 text-left
                   transition-all duration-200
-                  ${
-                    isActive
-                      ? "border-[#3b82f6] bg-[rgba(229,241,255,1)]"
-                      : "border-gray-200 bg-white hover:border-[#3b82f6] hover:bg-[rgba(229,241,255,1)]"
+                  ${isActive
+                    ? "border-[#3b82f6] bg-[rgba(229,241,255,1)]"
+                    : "border-gray-200 bg-white hover:border-[#3b82f6] hover:bg-[rgba(229,241,255,1)]"
                   }
                 `}
               >
@@ -234,10 +241,9 @@ console.log(objectLevelItems);
                     className={`
                       flex h-[32px] min-w-[32px] items-center justify-center rounded-lg text-[14px] font-semibold
                       transition-all duration-200
-                      ${
-                        isActive
-                          ? "bg-[#0F5FC2] text-white"
-                          : "bg-[rgba(229,241,255,1)] text-[rgba(15,95,194,1)] group-hover:bg-[#0F5FC2] group-hover:text-white"
+                      ${isActive
+                        ? "bg-[#0F5FC2] text-white"
+                        : "bg-[rgba(229,241,255,1)] text-[rgba(15,95,194,1)] group-hover:bg-[#0F5FC2] group-hover:text-white"
                       }
                     `}
                   >
@@ -252,10 +258,9 @@ console.log(objectLevelItems);
                 <span
                   className={`
                     text-xl transition-colors duration-200
-                    ${
-                      isActive
-                        ? "text-[#0F5FC2]"
-                        : "text-gray-400 group-hover:text-[#0F5FC2]"
+                    ${isActive
+                      ? "text-[#0F5FC2]"
+                      : "text-gray-400 group-hover:text-[#0F5FC2]"
                     }
                   `}
                 >
@@ -268,15 +273,15 @@ console.log(objectLevelItems);
 
         {isLoading ? (
           <div className="rounded-2xl bg-white p-6 text-center text-gray-500 shadow-sm">
-            Ma’lumotlar yuklanmoqda...
+            <LoadingSpinner />
           </div>
         ) : isError ? (
           <div className="rounded-2xl bg-white p-6 text-center text-red-500 shadow-sm">
-            Ma’lumotlarni yuklashda xatolik yuz berdi
+            {t("common.error")}
           </div>
         ) : tableData.length === 0 ? (
           <div className="rounded-2xl bg-white p-6 text-center text-gray-500 shadow-sm">
-            Ma’lumot topilmadi
+            {t("common.not_found")}
           </div>
         ) : (
           <StatusTable data={tableData} />

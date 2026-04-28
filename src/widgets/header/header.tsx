@@ -1,47 +1,38 @@
 import { useEffect, useRef, useState } from "react";
-import {  LogOut, Phone, Shield, User } from "lucide-react";
-// import { useTranslation } from "react-i18next";
+import { Check, LogOut, Phone, Shield, User } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useProfile } from "../../entities/auth/hooks/use-profile";
 import { useLogout } from "../../entities/auth/hooks/use-logout";
+import { normalizeAppLanguage } from "../../shared/i18n/helpers";
 
-// type AppLang = "uz" | "ru" | "uz-cyrl";
+type AppLang = "uz" | "ru" | "uz-Cyrl";
 
-// const languages: { value: AppLang; label: string; title: string }[] = [
-//   { value: "uz", label: "UZ", title: "O‘zbekcha" },
-//   { value: "ru", label: "RU", title: "Русский" },
-//   { value: "uz-cyrl", label: "ЎЗ", title: "Ўзбекча" },
-// ];
+const languages: { value: AppLang; label: string }[] = [
+  { value: "uz", label: "UZ" },
+  { value: "ru", label: "RU" },
+  { value: "uz-Cyrl", label: "UZ-CYRL" },
+];
 
 export default function Header() {
   const [open, setOpen] = useState(false);
-  // const [langOpen, setLangOpen] = useState(false);
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const langRef = useRef<HTMLDivElement | null>(null);
 
-  // const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { data: profile, isLoading } = useProfile();
   const { mutate: logout, isPending: isLoggingOut } = useLogout();
 
-  // const normalizeLang = (lang?: string | null): AppLang => {
-  //   if (lang === "ru" || lang?.startsWith("ru")) return "ru";
-  //   if (lang === "uz-cyrl" || lang === "uz-Cyrl") return "uz-cyrl";
-  //   return "uz";
-  // };
+  const currentLang = normalizeAppLanguage(
+    localStorage.getItem("app_language") || i18n.language
+  );
 
-  // const currentLang = normalizeLang(
-  //   localStorage.getItem("app_language") || i18n.language
-  // );
+  const changeLanguage = async (lang: AppLang) => {
+    if (currentLang === lang) return;
 
-  // const activeLang =
-  //   languages.find((lang) => lang.value === currentLang) || languages[0];
-
-  // const changeLanguage = async (lang: AppLang) => {
-  //   await i18n.changeLanguage(lang);
-  //   localStorage.setItem("app_language", lang);
-  //   setLangOpen(false);
-  //   window.location.reload();
-  // };
+    await i18n.changeLanguage(lang);
+    localStorage.setItem("app_language", lang);
+    window.location.reload();
+  };
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -49,10 +40,6 @@ export default function Header() {
 
       if (dropdownRef.current && !dropdownRef.current.contains(target)) {
         setOpen(false);
-      }
-
-      if (langRef.current && !langRef.current.contains(target)) {
-        // setLangOpen(false);
       }
     }
 
@@ -63,10 +50,12 @@ export default function Header() {
   const fullName =
     profile?.full_name ||
     [profile?.last_name, profile?.first_name].filter(Boolean).join(" ") ||
-    "Foydalanuvchi";
+    t("profile.default_user");
 
-  const roleText = profile?.role_label || profile?.role || "Admin";
-  const phoneText = profile?.phone || "Telefon mavjud emas";
+  const roleText =
+    profile?.role_label || profile?.role || t("profile.default_role");
+
+  const phoneText = profile?.phone || t("profile.no_phone");
 
   return (
     <header
@@ -97,74 +86,6 @@ export default function Header() {
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">
-        <div className="relative" ref={langRef}>
-          {/* <button
-            type="button"
-            onClick={() => setLangOpen((prev) => !prev)}
-            className="
-              flex items-center gap-2 rounded-2xl border border-gray-200 bg-white px-3 py-2
-              text-sm font-semibold text-gray-800 shadow-sm transition hover:bg-gray-50
-              2xl:px-4 2xl:py-3 2xl:text-[16px]
-              min-[1800px]:px-5 min-[1800px]:py-3.5 min-[1800px]:text-[18px]
-              cursor-pointer
-            "
-          >
-
-            <span>{activeLang.label}</span>
-            <ChevronDown
-              className={`h-4 w-4 text-gray-500 transition ${langOpen ? "rotate-180" : ""
-                }`}
-            />
-          </button> */}
-
-          {/* {langOpen && (
-            <div
-              className="
-                absolute right-0 top-[calc(100%+10px)] z-[60]
-                w-[220px] rounded-2xl border border-gray-200 bg-white p-2 shadow-xl
-                2xl:w-[260px] 2xl:p-3
-                min-[1800px]:w-[300px]
-              "
-            >
-              {languages.map((lang) => {
-                const isActive = activeLang.value === lang.value;
-
-                return (
-                  <button
-                    key={lang.value}
-                    type="button"
-                    onClick={() => changeLanguage(lang.value)}
-                    className={`
-                      flex w-full items-center justify-between rounded-xl px-3 py-3 text-left transition
-                      2xl:px-4 2xl:py-4
-                      ${isActive
-                        ? "bg-[rgba(15,95,194,1)] text-white"
-                        : "text-gray-700 hover:bg-gray-100"
-                      }
-                    `}
-                  >
-                    <div>
-                      <p className="text-sm font-semibold 2xl:text-[16px]">
-                        {lang.title}
-                      </p>
-                      <p
-                        className={`text-xs 2xl:text-[13px] ${isActive ? "text-gray-300" : "text-gray-400"
-                          }`}
-                      >
-                        {lang.label}
-                      </p>
-                    </div>
-
-                    {isActive && (
-                      <Check className="h-4 w-4 2xl:h-5 2xl:w-5" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-          )} */}
-        </div>
-
         <div className="relative shrink-0" ref={dropdownRef}>
           <button
             type="button"
@@ -190,8 +111,9 @@ export default function Header() {
                   min-[2200px]:text-[20px]
                 "
               >
-                {isLoading ? "Yuklanmoqda..." : fullName}
+                {isLoading ? t("profile.loading") : fullName}
               </p>
+
               <p
                 className="
                   truncate text-gray-500
@@ -249,8 +171,9 @@ export default function Header() {
 
                 <div className="min-w-0">
                   <p className="truncate font-semibold text-gray-900 text-base lg:text-[17px] 2xl:text-[20px] min-[1800px]:text-[22px] min-[2200px]:text-[24px]">
-                    {isLoading ? "Yuklanmoqda..." : fullName}
+                    {isLoading ? t("profile.loading") : fullName}
                   </p>
+
                   <p className="truncate text-gray-500 text-sm 2xl:text-[15px] min-[1800px]:text-[16px] min-[2200px]:text-[17px]">
                     {roleText}
                   </p>
@@ -262,10 +185,10 @@ export default function Header() {
                   <User className="mt-0.5 h-5 w-5 shrink-0 text-gray-500 2xl:h-6 2xl:w-6 min-[1800px]:h-7 min-[1800px]:w-7" />
                   <div className="min-w-0">
                     <p className="text-xs text-gray-500 2xl:text-[13px] min-[1800px]:text-[14px]">
-                      F.I.O
+                      {t("profile.full_name")}
                     </p>
                     <p className="break-words font-medium text-gray-900 text-sm lg:text-[15px] 2xl:text-[17px] min-[1800px]:text-[18px]">
-                      {isLoading ? "Yuklanmoqda..." : fullName}
+                      {isLoading ? t("profile.loading") : fullName}
                     </p>
                   </div>
                 </div>
@@ -274,7 +197,7 @@ export default function Header() {
                   <Shield className="mt-0.5 h-5 w-5 shrink-0 text-gray-500 2xl:h-6 2xl:w-6 min-[1800px]:h-7 min-[1800px]:w-7" />
                   <div className="min-w-0">
                     <p className="text-xs text-gray-500 2xl:text-[13px] min-[1800px]:text-[14px]">
-                      Lavozim / Rol
+                      {t("profile.role")}
                     </p>
                     <p className="break-words font-medium text-gray-900 text-sm lg:text-[15px] 2xl:text-[17px] min-[1800px]:text-[18px]">
                       {roleText}
@@ -286,11 +209,53 @@ export default function Header() {
                   <Phone className="mt-0.5 h-5 w-5 shrink-0 text-gray-500 2xl:h-6 2xl:w-6 min-[1800px]:h-7 min-[1800px]:w-7" />
                   <div className="min-w-0">
                     <p className="text-xs text-gray-500 2xl:text-[13px] min-[1800px]:text-[14px]">
-                      Telefon raqam
+                      {t("profile.phone")}
                     </p>
                     <p className="break-words font-medium text-gray-900 text-sm lg:text-[15px] 2xl:text-[17px] min-[1800px]:text-[18px]">
                       {phoneText}
                     </p>
+                  </div>
+                </div>
+
+                <div className="rounded-xl bg-gray-50 px-3 py-3 2xl:px-4 2xl:py-4">
+                  <div className="mb-2 flex items-center justify-between">
+                    <p className="text-xs text-gray-500 2xl:text-[13px] min-[1800px]:text-[14px]">
+                      {t("profile.language")}
+                    </p>
+
+                    <p className="text-[11px] font-medium uppercase text-gray-400 2xl:text-xs">
+                      {currentLang}
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {languages.map((lang) => {
+                      const isActive = currentLang === lang.value;
+
+                      return (
+                        <button
+                          key={lang.value}
+                          type="button"
+                          onClick={() => changeLanguage(lang.value)}
+                          className={`
+                            flex h-8 flex-1 items-center justify-center gap-1 rounded-lg border text-[11px] font-semibold transition
+                            2xl:h-9 2xl:text-xs
+                            min-[1800px]:h-10 min-[1800px]:text-[13px]
+                            ${
+                              isActive
+                                ? "border-[rgba(15,95,194,1)] bg-[rgba(15,95,194,1)] text-white"
+                                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
+                            }
+                          `}
+                        >
+                          <span>{lang.label}</span>
+
+                          {isActive && (
+                            <Check className="h-3.5 w-3.5 2xl:h-4 2xl:w-4" />
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>
@@ -310,7 +275,9 @@ export default function Header() {
                 "
               >
                 <LogOut className="h-4 w-4 2xl:h-5 2xl:w-5 min-[1800px]:h-6 min-[1800px]:w-6" />
-                {isLoggingOut ? "Chiqilmoqda..." : "Logout"}
+                {isLoggingOut
+                  ? t("profile.logging_out")
+                  : t("profile.logout")}
               </button>
             </div>
           )}

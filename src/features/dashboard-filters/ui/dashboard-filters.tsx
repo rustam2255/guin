@@ -1,5 +1,7 @@
 import { ChevronDown } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { useFilterOptions } from "../../../shared/hooks/use-filter-options";
 import { useDashboardFiltersStore } from "../../../shared/store/dashboard-filters.store";
 import LoadingSpinner from "../../../shared/loading/loading.spinner";
@@ -65,6 +67,7 @@ function CustomSelect({
         "
       >
         <option value="">{placeholder}</option>
+
         {options.map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
@@ -81,6 +84,8 @@ function CustomSelect({
 }
 
 export default function DashboardFiltersBar() {
+  const { t } = useTranslation();
+
   const {
     role,
     regions,
@@ -179,21 +184,15 @@ export default function DashboardFiltersBar() {
   }, [draftFilters.colonyId, colonyOptions]);
 
   const getColonyId = (item: any): string => {
-    return String(
-      item.colony_id ??
-      item.colony?.id ??
-      item.colony ??
-      ""
-    );
+    return String(item.colony_id ?? item.colony?.id ?? item.colony ?? "");
   };
 
   const scopedObjects = useMemo(() => {
     if (!selectedColonyId) return [];
 
-    return objects.filter(
-      (item) => getColonyId(item) === selectedColonyId
-    );
+    return objects.filter((item) => getColonyId(item) === selectedColonyId);
   }, [objects, selectedColonyId]);
+
   const objectTypeOptions: SelectOption[] = useMemo(() => {
     if (!selectedColonyId) return [];
 
@@ -313,7 +312,7 @@ export default function DashboardFiltersBar() {
     return (
       <div className="rounded-2xl bg-white p-5 shadow-sm">
         <div className="py-4 text-sm text-red-500">
-          Filterlarni olishda xatolik yuz berdi
+          {t("filters.load_error")}
         </div>
       </div>
     );
@@ -324,24 +323,28 @@ export default function DashboardFiltersBar() {
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-4">
         {showRegion && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-[#6B7280]">Mintaqa</p>
+            <p className="text-sm font-medium text-[#6B7280]">
+              {t("filters.region")}
+            </p>
             <CustomSelect
               value={selectedRegionId}
               onChange={handleRegionChange}
               options={regionOptions}
-              placeholder="Mintaqani tanlang"
+              placeholder={t("filters.select_region")}
             />
           </div>
         )}
 
         {showProvince && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-[#6B7280]">Viloyat</p>
+            <p className="text-sm font-medium text-[#6B7280]">
+              {t("filters.province")}
+            </p>
             <CustomSelect
               value={selectedProvinceId}
               onChange={handleProvinceChange}
               options={provinceOptions}
-              placeholder="Viloyatni tanlang"
+              placeholder={t("filters.select_province")}
               disabled={!selectedRegionId}
             />
           </div>
@@ -349,12 +352,14 @@ export default function DashboardFiltersBar() {
 
         {showColony && (
           <div className="space-y-2">
-            <p className="text-sm font-medium text-[#6B7280]">Koloniya</p>
+            <p className="text-sm font-medium text-[#6B7280]">
+              {t("filters.colony")}
+            </p>
             <CustomSelect
               value={selectedColonyId}
               onChange={handleColonyChange}
               options={colonyOptions}
-              placeholder="Koloniyani tanlang"
+              placeholder={t("filters.select_colony")}
               disabled={!selectedProvinceId}
             />
           </div>
@@ -362,7 +367,9 @@ export default function DashboardFiltersBar() {
 
         {showObjectType && (
           <div className="space-y-2 xl:col-span-1">
-            <p className="text-sm font-medium text-[#6B7280]">Obyekt turi</p>
+            <p className="text-sm font-medium text-[#6B7280]">
+              {t("filters.object_type")}
+            </p>
 
             <CustomSelect
               value={selectedObjectTypeId}
@@ -371,7 +378,7 @@ export default function DashboardFiltersBar() {
                 setIsPlaceObjectOpen(Boolean(value));
               }}
               options={objectTypeOptions}
-              placeholder="Obyekt turini tanlang"
+              placeholder={t("filters.select_object_type")}
               disabled={!selectedColonyId}
             />
 
@@ -381,20 +388,26 @@ export default function DashboardFiltersBar() {
                   type="button"
                   onClick={() => setIsPlaceObjectOpen((prev) => !prev)}
                   className="
-            mt-2 flex h-12 w-full items-center justify-between rounded-xl
-            border border-[#D9D9D9] bg-white px-4 text-left text-[15px]
-            text-[#2B2B2B] transition hover:border-[#3B82F6]
-          "
+                    mt-2 flex h-12 w-full items-center justify-between rounded-xl
+                    border border-[#D9D9D9] bg-white px-4 text-left text-[15px]
+                    text-[#2B2B2B] transition hover:border-[#3B82F6]
+                  "
                 >
-                  <span className={selectedPlaceObjectId ? "text-[#2B2B2B]" : "text-[#9CA3AF]"}>
-                    {placeObjectOptions.find((item) => item.value === selectedPlaceObjectId)?.label ||
-                      "Shartnoma obyektini tanlang"}
+                  <span
+                    className={
+                      selectedPlaceObjectId ? "text-[#2B2B2B]" : "text-[#9CA3AF]"
+                    }
+                  >
+                    {placeObjectOptions.find(
+                      (item) => item.value === selectedPlaceObjectId
+                    )?.label || t("filters.select_place_object")}
                   </span>
 
                   <ChevronDown
                     size={18}
-                    className={`text-[#6B7280] transition ${isPlaceObjectOpen ? "rotate-180" : ""
-                      }`}
+                    className={`text-[#6B7280] transition ${
+                      isPlaceObjectOpen ? "rotate-180" : ""
+                    }`}
                   />
                 </button>
 
@@ -402,7 +415,7 @@ export default function DashboardFiltersBar() {
                   <div className="absolute left-0 right-0 top-[58px] z-50 max-h-[220px] overflow-y-auto rounded-xl border border-[#E5E7EB] bg-white p-1 shadow-lg">
                     {placeObjectOptions.length === 0 ? (
                       <div className="px-3 py-2 text-sm text-[#9CA3AF]">
-                        Bu obyekt turi uchun shartnoma obyektlari topilmadi.
+                        {t("filters.place_object_empty")}
                       </div>
                     ) : (
                       placeObjectOptions.map((option) => (
@@ -414,12 +427,13 @@ export default function DashboardFiltersBar() {
                             setIsPlaceObjectOpen(false);
                           }}
                           className={`
-                    w-full rounded-lg px-3 py-2 text-left text-sm transition
-                    ${selectedPlaceObjectId === option.value
-                              ? "bg-[#EFF6FF] font-semibold text-[#2563EB]"
-                              : "text-[#374151] hover:bg-[#F3F4F6]"
+                            w-full rounded-lg px-3 py-2 text-left text-sm transition
+                            ${
+                              selectedPlaceObjectId === option.value
+                                ? "bg-[#EFF6FF] font-semibold text-[#2563EB]"
+                                : "text-[#374151] hover:bg-[#F3F4F6]"
                             }
-                  `}
+                          `}
                         >
                           {option.label}
                         </button>
@@ -437,22 +451,22 @@ export default function DashboardFiltersBar() {
             type="button"
             onClick={handleApply}
             className="
-          h-12 rounded-2xl bg-[#2563EB] px-5 text-sm font-semibold text-white
-          shadow-sm cursor-pointer transition hover:bg-[#1D4ED8]
-        "
+              h-12 rounded-2xl bg-[#2563EB] px-5 text-sm font-semibold text-white
+              shadow-sm cursor-pointer transition hover:bg-[#1D4ED8]
+            "
           >
-            Qidirish
+            {t("filters.search")}
           </button>
 
           <button
             type="button"
             onClick={handleReset}
             className="
-          h-12 rounded-2xl border cursor-pointer border-[#D1D5DB] bg-white px-5
-          text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]
-        "
+              h-12 rounded-2xl border cursor-pointer border-[#D1D5DB] bg-white px-5
+              text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]
+            "
           >
-            Tozalash
+            {t("filters.reset")}
           </button>
         </div>
       </div>

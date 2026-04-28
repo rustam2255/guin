@@ -1,24 +1,146 @@
 {
-  "common": {
+  "sidebar": {
+    "title": "Цифровой контролёр",
+    "dashboard": "Дашборд",
+    "inspection": "Проверка",
+    "registry": "Реестр"
+  },
+  "filters": {
+    "region": "Регион",
+    "province": "Область",
+    "colony": "Колония",
+    "object_type": "Тип объекта",
+    "select_region": "Выберите регион",
+    "select_province": "Выберите область",
+    "select_colony": "Выберите колонию",
+    "select_object_type": "Выберите тип объекта",
+    "select_place_object": "Выберите объект",
     "search": "Поиск",
-    "reset": "Сброс",
-    "apply": "Применить",
-    "loading": "Загрузка...",
+    "reset": "Сброс"
+  },
+  "stats": {
+    "active": "Наличие",
+    "total": "Всего"
+  },
+  "inspection": {
+    "day": "Дневная проверка",
+    "night": "Ночная проверка",
+    "emergency": "Чрезвычайная проверка"
+  },
+  "table": {
+    "id": "ID",
+    "region": "Регион",
+    "province": "Область",
+    "colony_address": "Адрес колонии",
+    "object": "Объект договора",
+    "time": "Время",
+    "count": "Наличие/Всего",
+    "status": "Статус"
+  },
+  "status": {
+    "completed": "Завершено",
+    "active": "Активный",
+     "inactive": "Неактивный"
+  },
+  "registry": {
+    "search_placeholder": "Поиск",
+    "download": "Скачать",
+    "prisoners": "Заключённые",
+    "full_name": "Ф.И.О",
+    "birth_date": "Дата рождения",
+    "colony": "Колония",
+    "object": "Объект договора",
+    "start_date": "Дата начала наказания",
+    "passport": "Серия паспорта",
+    "error": "Ошибка при загрузке списка заключённых"
+  },
+  "common": {
+    "loading": "Загрузка данных...",
+    "not_found": "Данные не найдены",
+    "total": "Всего",
+    "prev": "Назад",
+    "next": "Вперёд",
+    "yes": "Да",
+    "no": "Нет",
+     "back": "Назад",
+    "all": "Все",
     "error": "Произошла ошибка"
   },
-  "auth": {
-    "login": "Вход",
-    "logout": "Выход",
-    "username": "Имя пользователя",
-    "password": "Пароль"
+    "attendance_status": {
+    "present": "Присутствовал",
+    "missed": "Отсутствовал",
+    "pending": "Ожидается"
   },
-  "menu": {
-    "dashboard": "Панель",
-    "regions": "Регионы",
-    "provinces": "Области",
-    "colonies": "Колонии",
-    "users": "Пользователи",
-    "settings": "Настройки",
-    "profile": "Профиль"
+  "inspection_detail": {
+    "title": "Детали переклички",
+    "selected_id": "Выбранный ID переклички",
+    "object": "Объект",
+    "date_time": "Дата / время",
+    "search_placeholder": "Поиск по Ф.И.О",
+    "face_id": "Face ID",
+    "date": "Дата",
+    "recorded_at": "Время присутствия"
+  },
+  "dashboard": {
+    "total": "Всего",
+    "men": "Мужчины",
+    "women": "Женщины",
+      "by_region": "По регионам",
+      "prisoners": "Заключённые",
+  "other_info": "Другая информация о заключённых",
+  "by_object_type": "По типам объектов",
+    "by_status": "Заключённые по статусу",
+    "by_gender": "По полу",
+    "by_object": "По объектам",
+    "by_colony": "По колониям",
+    "see_all": "Смотреть все",
+    "duty_free": "На полевых работах",
+    "production": "В производстве",
+    "contract_object": "В договорных объектах",
+    "sick": "Больные",
+  
+  "by_gender_short": "По полу",
+  "gender": "Пол"
+
+  },
+  "profile": {
+    "full_name": "Ф.И.О",
+    "role": "Должность / Роль",
+    "phone": "Телефон",
+    "language": "Язык",
+    "logout": "Выйти"
+  },
+  "registry_detail": {
+    "tabs": {
+      "personal": "Личные данные",
+      "family": "Члены семьи",
+      "court": "Судимость",
+      "crime": "Текущее преступление",
+      "other": "Другое"
+    },
+    "fields": {
+      "citizenship": "Гражданство",
+      "passport": "Паспорт",
+      "nationality": "Национальность",
+      "family_info": "Информация о членах семьи",
+      "emergency_contact_person": "Контактное лицо для экстренной связи",
+      "date_of_sentencing": "Дата начала наказания",
+      "sentence_end_date": "Дата окончания наказания",
+      "escape_attempts": "Попытки побега",
+      "danger_level": "Уровень опасности",
+      "psychological_evaluation": "Психологическая оценка",
+      "condition": "Состояние",
+      "birthplace": "Место рождения",
+      "permanent_residence": "Постоянное место жительства",
+      "register_add": "Адрес регистрации",
+      "last_add": "Последний адрес проживания",
+      "fingerprint": "Отпечаток пальца",
+      "disability": "Инвалидность",
+      "created_at": "Дата создания",
+      "updated_at": "Дата обновления"
+    },
+    "not_found_title": "Информация о заключённом не найдена",
+    "not_found_description": "При прямом переходе на эту страницу получить данные невозможно, так как отдельный detail API отсутствует. Выберите заключённого из списка.",
+    "back_to_registry": "Вернуться к списку"
   }
 }

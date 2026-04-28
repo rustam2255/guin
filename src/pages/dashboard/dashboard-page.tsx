@@ -23,10 +23,11 @@ import { useFilterOptions } from "../../shared/hooks/use-filter-options";
 import { transformStatusResultsToDoughnut } from "../../shared/helpers/transformRegionsToDoughnut";
 import { useAuthStore } from "../../entities/auth/model/auth.store";
 import { useStatusBreakdown } from "../../entities/regionForDashboard/hooks/use-region-status";
-
+import { useTranslation } from "react-i18next";
 export default function DashboardPage() {
   const role = useAuthStore((state) => state.profile?.role);
   const { appliedFilters } = useDashboardFiltersStore();
+  const { t } = useTranslation();
   const {
     regions,
     colonies,
@@ -86,7 +87,7 @@ export default function DashboardPage() {
 
   const objectTypeCards = transformObjectTypeCards(objectTypeData);
   console.log(objectTypeData);
-  
+
 
 
   const genderStatsItems = transformGenderStatsItems(genderData, {
@@ -123,20 +124,20 @@ export default function DashboardPage() {
     );
   }, [role, objectTypeData, breakdownQueries, breakdownItems]);
   const breakdownTitle = useMemo(() => {
-    if (role === "SUPERADMIN") return "Mintaqalar kesimida";
-    if (role === "MINTAQA_ADMIN") return "Koloniyalar kesimida";
-    if (role === "KALONIYA_ADMIN") return "Obyekt turlari kesimida";
-    if (role === "PROVINCEADMIN") return "Koloniyalar kesimida";
-    return "Mintaqalar kesimida";
-  }, [role]);
+    if (role === "SUPERADMIN") return t("dashboard.by_region");
+    if (role === "MINTAQA_ADMIN") return t("dashboard.by_colony");
+    if (role === "KALONIYA_ADMIN") return t("dashboard.by_object_type");
+    if (role === "PROVINCEADMIN") return t("dashboard.by_colony");
+    return t("dashboard.by_region");
+  }, [role, t]);
 
   const breakdownTableHeader = useMemo(() => {
-    if (role === "SUPERADMIN") return "Mintaqa";
-    if (role === "MINTAQA_ADMIN") return "Koloniya";
-    if (role === "KALONIYA_ADMIN") return "Obyekt turi";
-    if (role === "PROVINCEADMIN") return "Koloniya";
-    return "Mintaqa";
-  }, [role]);
+    if (role === "SUPERADMIN") return t("filters.region");
+    if (role === "MINTAQA_ADMIN") return t("filters.colony");
+    if (role === "KALONIYA_ADMIN") return t("filters.object_type");
+    if (role === "PROVINCEADMIN") return t("filters.colony");
+    return t("filters.region");
+  }, [role, t]);
   const breakdownTotalValue = useMemo(() => {
     return breakdownDoughnutItems.reduce((sum, item) => sum + item.value, 0);
   }, [breakdownDoughnutItems]);
@@ -162,7 +163,7 @@ export default function DashboardPage() {
           </div>
         ) : genderError ? (
           <div className="rounded-3xl bg-white px-4 py-4 text-sm text-red-500 shadow-sm sm:px-5 lg:px-6 2xl:px-8 2xl:py-5 2xl:text-base">
-            Genderlarni olishda xatolik yuz berdi
+            {t("dashboard.gender_error")}
           </div>
         ) : (
           <DashboardStatsGrid items={genderStatsItems} />
@@ -192,7 +193,7 @@ export default function DashboardPage() {
           </div>
         ) : (
           <PrisonStatusChart
-            title="Mahkumlar status bo‘yicha"
+            title={t("dashboard.by_status")}
             total={chartData.total}
             labels={chartData.labels}
             datasets={chartData.datasets}
@@ -201,7 +202,7 @@ export default function DashboardPage() {
 
         <section className="space-y-3 sm:space-y-4">
           <p className="text-[14px] font-medium text-[rgba(181,183,192,1)] sm:text-[15px] lg:text-[16px] 2xl:text-[18px] min-[1800px]:text-[20px]">
-            Jinsi bo&apos;yicha ma&apos;lumot
+            {t("dashboard.by_gender")}
           </p>
 
           <div className="w-full max-w-full">
@@ -217,7 +218,7 @@ export default function DashboardPage() {
 
         <section className="space-y-3 sm:space-y-4">
           <p className="text-[14px] font-medium text-[rgba(181,183,192,1)] sm:text-[15px] lg:text-[16px] 2xl:text-[18px] min-[1800px]:text-[20px]">
-            Mahkumlar obyektlar kesimida
+            {t("dashboard.by_object")}
           </p>
           {objectTypeLoading ? (
             <div className="rounded-3xl bg-white p-5 shadow-sm sm:p-6 lg:p-7 2xl:p-8 min-[1800px]:p-10">
@@ -228,7 +229,7 @@ export default function DashboardPage() {
           ) : objectTypeError ? (
             <div className="rounded-3xl bg-white p-5 shadow-sm sm:p-6 lg:p-7 2xl:p-8 min-[1800px]:p-10">
               <div className="text-sm text-red-500 2xl:text-base">
-                Obyekt turlari bo‘yicha statistika yuklanmadi
+                {t("dashboard.object_type_error")}
               </div>
             </div>
           ) : (
@@ -254,8 +255,8 @@ export default function DashboardPage() {
           )}
 
           <DoughnutCard
-            title="Jinsi bo‘yicha"
-            tableHeader="Jinsi"
+            title={t("dashboard.by_gender_short")}
+            tableHeader={t("dashboard.gender")}
             totalValue={genderData?.total_count}
             items={genderDoughnutItems}
           />
@@ -263,7 +264,7 @@ export default function DashboardPage() {
 
         <section className="space-y-3 sm:space-y-4 mb-5">
           <p className="text-[14px] font-medium text-[rgba(181,183,192,1)] sm:text-[15px] lg:text-[16px] 2xl:text-[18px] min-[1800px]:text-[20px]">
-            Mahkumlar haqida boshqa ma&apos;lumotlar
+            {t("dashboard.other_info")}
           </p>
 
           {diseaseLoading ? (

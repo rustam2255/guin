@@ -11,10 +11,16 @@ export const RAW_API_URL =
 type AppLang = "uz" | "ru" | "uz-cyrl";
 
 export function getCurrentLang(): AppLang {
-  const lang = i18n.language || localStorage.getItem("app_language") || "uz";
+  const rawLang =
+    i18n.language || localStorage.getItem("app_language") || "uz";
 
-  if (lang === "ru") return "ru";
-  if (lang === "uz-cyrl") return "uz-cyrl";
+  const lang = rawLang.toLowerCase();
+
+  if (lang.startsWith("ru")) return "ru";
+
+  if (lang.includes("cyrl") || lang.includes("cryl")) {
+    return "uz-cyrl";
+  }
 
   return "uz";
 }

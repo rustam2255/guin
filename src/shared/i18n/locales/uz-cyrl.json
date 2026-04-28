@@ -1,24 +1,146 @@
 {
-  "common": {
+  "sidebar": {
+    "title": "Рақамли Назоратчи",
+    "dashboard": "Дашборд",
+    "inspection": "Саноқ",
+    "registry": "Рўйхат"
+  },
+  "filters": {
+    "region": "Минтақа",
+    "province": "Вилоят",
+    "colony": "Колония",
+    "object_type": "Объект тури",
+    "select_region": "Минтақани танланг",
+    "select_province": "Вилоятни танланг",
+    "select_colony": "Колонияни танланг",
+    "select_object_type": "Объект турини танланг",
+    "select_place_object": "Объектни танланг",
     "search": "Қидириш",
-    "reset": "Тозалаш",
-    "apply": "Қўллаш",
-    "loading": "Юкланмоқда...",
+    "reset": "Тозалаш"
+  },
+  "stats": {
+    "active": "Борлар",
+    "total": "Умумий"
+  },
+  "inspection": {
+    "day": "Кундузги саноқ",
+    "night": "Тунги саноқ",
+    "emergency": "Фавқулодда саноқ"
+  },
+  "table": {
+    "id": "ID",
+    "region": "Минтақа",
+    "province": "Вилоят",
+    "colony_address": "Манзил колония",
+    "object": "Шартнома объекти",
+    "time": "Вақт",
+    "count": "Борлар/Жами",
+    "status": "Статус"
+  },
+  "status": {
+    "completed": "Тугалланган",
+    "active": "Фаол",
+     "inactive": "Нофаол"
+  },
+  "registry": {
+    "search_placeholder": "Қидириш",
+    "download": "Юклаш",
+    "prisoners": "Маҳкумлар",
+    "full_name": "Ф.И.О",
+    "birth_date": "Туғилган сана",
+    "colony": "Колония",
+    "object": "Шартнома объекти",
+    "start_date": "Жазо бошланган сана",
+    "passport": "Паспорт серияси",
+    "by_gender_short": "Жинси бўйича",
+  "gender": "Жинси",
+   "error": "Маҳкумлар рўйхатини юклашда хатолик юз берди"
+  },
+    "common": {
+    "loading": "Маълумотлар юкланмоқда...",
+    "not_found": "Маълумот топилмади",
+    "total": "Жами",
+    "prev": "Олдинги",
+    "next": "Кейинги",
+    "yes": "Ҳа",
+    "no": "Йўқ",
+     "back": "Орқага",
+    "all": "Барчаси",
     "error": "Хатолик юз берди"
   },
-  "auth": {
-    "login": "Кириш",
-    "logout": "Чиқиш",
-    "username": "Фойдаланувчи номи",
-    "password": "Парол"
+    "attendance_status": {
+    "present": "Қатнашган",
+    "missed": "Келмаган",
+    "pending": "Кутилмоқда"
   },
-  "menu": {
-    "dashboard": "Дашборд",
-    "regions": "Минтақалар",
-    "provinces": "Вилоятлар",
-    "colonies": "Колониялар",
-    "users": "Фойдаланувчилар",
-    "settings": "Созламалар",
-    "profile": "Профиль"
+  "inspection_detail": {
+    "title": "Йўқлама деталлари",
+    "selected_id": "Танланган йўқлама ID",
+    "object": "Объект",
+    "date_time": "Сана / вақт",
+    "search_placeholder": "Ф.И.О бўйича қидириш",
+    "face_id": "Face ID",
+    "date": "Сана",
+    "recorded_at": "Қатнашган вақт"
+  },
+  "dashboard": {
+    "total": "Жами",
+    "men": "Эркаклар",
+    "women": "Аёллар",
+      "by_region": "Минтақалар кесимида",
+       "gender": "Жинси",
+"prisoners": "Маҳкумлар",
+  "by_object_type": "Объект турлари кесимида",
+    "by_status": "Маҳкумлар статус бўйича",
+    "by_gender": "Жинси бўйича маълумот",
+    "by_gender_short": "Жинси бўйича",
+       "other_info": "Маҳкумлар ҳақида бошқа маълумотлар",
+    "by_object": "Маҳкумлар объектлар кесимида",
+    "by_colony": "Колониялар кесимида",
+    "see_all": "Барчасини кўриш",
+    "duty_free": "Дала ер майдонида",
+    "production": "Ёрдамчи ишлаб чиқаришда",
+    "contract_object": "Шартнома объектида",
+    "sick": "Касал"
+  },
+  "profile": {
+    "full_name": "Ф.И.О",
+    "role": "Лавозим / Рол",
+    "phone": "Телефон рақам",
+    "language": "Тил",
+    "logout": "Чиқиш"
+  },
+  "registry_detail": {
+    "tabs": {
+      "personal": "Шахсий маълумотлар",
+      "family": "Оила аъзолари",
+      "court": "Судланганлик",
+      "crime": "Ҳозирги жиноят",
+      "other": "Бошқалар"
+    },
+    "fields": {
+      "citizenship": "Фуқаролиги",
+      "passport": "Паспорт",
+      "nationality": "Миллати",
+      "family_info": "Оила аъзолари ҳақидаги маълумот",
+      "emergency_contact_person": "Фавқулодда алоқадаги шахс",
+      "date_of_sentencing": "Жазо бошланиш санаси",
+      "sentence_end_date": "Жазо тугаш санаси",
+      "escape_attempts": "Қочиш уринишлари",
+      "danger_level": "Хавф даражаси",
+      "psychological_evaluation": "Психологик баҳолаш",
+      "condition": "Ҳолати",
+      "birthplace": "Туғилган жойи",
+      "permanent_residence": "Доимий яшаш жойи",
+      "register_add": "Рўйхатдан ўтган манзил",
+      "last_add": "Охирги яшаш манзили",
+      "fingerprint": "Бармоқ изи",
+      "disability": "Ногиронлик",
+      "created_at": "Яратилган вақт",
+      "updated_at": "Янгиланган вақт"
+    },
+    "not_found_title": "Маҳкум маълумоти топилмади",
+    "not_found_description": "Бу саҳифага тўғридан-тўғри кирилганда detail API бўлмагани учун маълумотни олиш имкони йўқ. Рўйхатдан маҳкумни танлаб киринг.",
+    "back_to_registry": "Рўйхатга қайтиш"
   }
 }

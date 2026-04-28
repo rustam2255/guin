@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import { useFilterOptions } from "../../shared/hooks/use-filter-options";
 
@@ -20,6 +22,8 @@ const activeClass =
 const inactiveClass = "text-black hover:bg-gray-100";
 
 export default function Sidebar() {
+  const { t } = useTranslation();
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -32,9 +36,21 @@ export default function Sidebar() {
     useDashboardFiltersStore();
 
   const staticMenuItems = [
-    { label: "Dashboard", path: "/dashboard", icon: <KeyRound size={18} /> },
-    { label: "Sanoq", path: "/count", icon: <FileText size={18} /> },
-    { label: "Ro‘yxat", path: "/registry", icon: <Table2 size={18} /> },
+    {
+      label: t("sidebar.dashboard"),
+      path: "/dashboard",
+      icon: <KeyRound size={18} />,
+    },
+    {
+      label: t("sidebar.inspection"),
+      path: "/count",
+      icon: <FileText size={18} />,
+    },
+    {
+      label: t("sidebar.registry"),
+      path: "/registry",
+      icon: <Table2 size={18} />,
+    },
   ];
 
   const regionMenus = useMemo(() => {
@@ -173,7 +189,7 @@ export default function Sidebar() {
               min-[1800px]:text-[24px]
             "
           >
-            Raqamli Nazoratchi
+            {t("sidebar.title")}
           </h2>
         </div>
 
@@ -212,7 +228,7 @@ export default function Sidebar() {
 
         {isLoading ? (
           <div className="px-4 py-3 text-sm text-gray-500">
-            Mintaqalar yuklanmoqda...
+            {t("sidebar.loading_regions")}
           </div>
         ) : (
           regionMenus.map((item) => {

@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import DashboardLayout from "../../app/layout/dashboard-layout";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 import { useAuthStore } from "../../entities/auth/model/auth.store";
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import DashboardFiltersBar from "../../features/dashboard-filters/ui/dashboard-filters";
 import { usePrisonersList } from "../../entities/prisoners/api/use-prisoners.api";
-
 
 function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -27,6 +27,8 @@ function getStatusText(status: unknown) {
 }
 
 export default function RegistryPage() {
+  const { t } = useTranslation();
+
   const profile = useAuthStore((state) => state.profile);
   const role = profile?.role || "SUPERADMIN";
 
@@ -56,7 +58,6 @@ export default function RegistryPage() {
 
   const prisoners = prisonersQuery.data?.results ?? [];
   const count = prisonersQuery.data?.count ?? 0;
-  console.log(prisoners);
 
   const handleSearch = () => {
     setOffset(0);
@@ -91,7 +92,7 @@ export default function RegistryPage() {
                   onKeyDown={(e) => {
                     if (e.key === "Enter") handleSearch();
                   }}
-                  placeholder="Qidirish"
+                  placeholder={t("registry.search_placeholder")}
                   className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-blue-500 sm:w-[260px]"
                 />
 
@@ -100,17 +101,17 @@ export default function RegistryPage() {
                   onClick={handleSearch}
                   className="h-11 rounded-xl bg-[#1565d8] px-7 text-sm font-medium text-white hover:bg-[#1257bb]"
                 >
-                  Qidirish
+                  {t("filters.search")}
                 </button>
               </div>
 
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <button className="h-11 rounded-xl bg-[#18b368] px-8 text-sm font-medium text-white hover:bg-[#139357]">
-                  Yuklash
+                  {t("registry.download")}
                 </button>
 
                 <div className="flex h-11 min-w-[150px] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700">
-                  <span>Mahkumlar:</span>
+                  <span>{t("registry.prisoners")}:</span>
                   <span className="font-semibold text-gray-900">{count}</span>
                 </div>
               </div>
@@ -122,25 +123,29 @@ export default function RegistryPage() {
               <table className="min-w-[1100px] w-full border-separate border-spacing-0">
                 <thead>
                   <tr className="bg-[#f8f9fb] text-left text-[13px] font-medium text-gray-600">
-                    <th className="border-b border-gray-200 px-4 py-4">Id</th>
-                    <th className="border-b border-gray-200 px-4 py-4">F.I.O</th>
+                    <th className="border-b border-gray-200 px-4 py-4">
+                      {t("table.id")}
+                    </th>
+                    <th className="border-b border-gray-200 px-4 py-4">
+                      {t("registry.full_name")}
+                    </th>
                     <th className="border-b border-gray-200 px-4 py-4 min-w-[140px]">
-                      Tug‘ilgan sana
+                      {t("registry.birth_date")}
                     </th>
                     <th className="border-b border-gray-200 px-4 py-4">
-                      Koloniya
+                      {t("registry.colony")}
                     </th>
                     <th className="border-b border-gray-200 px-4 py-4">
-                      Shartnoma obyekti
+                      {t("registry.object")}
                     </th>
                     <th className="border-b border-gray-200 px-4 py-4">
-                      Jazo boshlangan sana
+                      {t("registry.start_date")}
                     </th>
                     <th className="border-b border-gray-200 px-4 py-4">
-                      Pasport seriyasi
+                      {t("registry.passport")}
                     </th>
                     <th className="border-b border-gray-200 px-4 py-4">
-                      Status
+                      {t("table.status")}
                     </th>
                   </tr>
                 </thead>
@@ -152,7 +157,7 @@ export default function RegistryPage() {
                         colSpan={8}
                         className="px-4 py-8 text-center text-sm text-gray-500"
                       >
-                        Ma’lumotlar yuklanmoqda...
+                        {t("common.loading")}
                       </td>
                     </tr>
                   ) : prisonersQuery.isError ? (
@@ -161,7 +166,7 @@ export default function RegistryPage() {
                         colSpan={8}
                         className="px-4 py-8 text-center text-sm text-red-500"
                       >
-                        Mahkumlar ro‘yxatini yuklashda xatolik yuz berdi
+                        {t("registry.error")}
                       </td>
                     </tr>
                   ) : prisoners.length === 0 ? (
@@ -170,7 +175,7 @@ export default function RegistryPage() {
                         colSpan={8}
                         className="px-4 py-8 text-center text-sm text-gray-500"
                       >
-                        Ma’lumot topilmadi
+                        {t("common.not_found")}
                       </td>
                     </tr>
                   ) : (
@@ -225,7 +230,8 @@ export default function RegistryPage() {
 
             <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-500">
-                Jami: <span className="font-semibold text-gray-900">{count}</span>
+                {t("common.total")}:{" "}
+                <span className="font-semibold text-gray-900">{count}</span>
               </p>
 
               <div className="flex items-center gap-2">
@@ -235,7 +241,7 @@ export default function RegistryPage() {
                   onClick={() => setOffset((prev) => Math.max(prev - limit, 0))}
                   className="h-10 rounded-xl border border-gray-200 px-4 text-sm font-medium text-gray-700 disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Oldingi
+                  {t("common.prev")}
                 </button>
 
                 <button
@@ -244,7 +250,7 @@ export default function RegistryPage() {
                   onClick={() => setOffset((prev) => prev + limit)}
                   className="h-10 rounded-xl bg-[#1565d8] px-4 text-sm font-medium text-white disabled:cursor-not-allowed disabled:opacity-50"
                 >
-                  Keyingi
+                  {t("common.next")}
                 </button>
               </div>
             </div>

@@ -1,31 +1,24 @@
 import i18n from "i18next";
-import LanguageDetector from "i18next-browser-languagedetector";
 import { initReactI18next } from "react-i18next";
 import { DEFAULT_LANGUAGE, resources } from "./resources";
 
-i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-  .init({
-    resources,
+const savedLang = localStorage.getItem("app_language") || DEFAULT_LANGUAGE;
 
-    fallbackLng: DEFAULT_LANGUAGE,
+i18n.use(initReactI18next).init({
+  resources,
 
-    supportedLngs: ["uz", "ru", "uz-cyrl"],
+  lng: savedLang,
+  fallbackLng: DEFAULT_LANGUAGE,
 
-    interpolation: {
-      escapeValue: false,
-    },
+  supportedLngs: ["uz", "ru", "uz-Cyrl"],
 
-    detection: {
-      order: ["localStorage", "navigator"],
-      caches: ["localStorage"],
-      lookupLocalStorage: "app_language",
-    },
+  interpolation: {
+    escapeValue: false,
+  },
 
-    react: {
-      useSuspense: false,
-    },
-  });
+  react: {
+    useSuspense: false,
+  },
+});
 
 export default i18n;
