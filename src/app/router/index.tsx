@@ -11,6 +11,10 @@ import RegistryIdPage from "../../pages/registery/registerId";
 import { useCurrentUser } from "../../shared/hooks/use-current-user";
 import InspectionDetailPage from "../../pages/count/inspection-detail";
 
+
+import CamerasPage from "../../pages/camera/cameras-page";
+import CameraLivePage from "../../pages/camera/camera-live-page";
+
 export default function AppRouter() {
   const { isAuthenticated } = useCurrentUser();
 
@@ -70,6 +74,8 @@ export default function AppRouter() {
           }
         />
 
+        <Route path="/camera/:cameraId" element={<CameraLivePage />} />
+        <Route path="/camera" element={<CamerasPage />} />
         <Route
           path="/registry/:id"
           element={

@@ -59,7 +59,8 @@ export default function DashboardPage() {
     isLoading: genderLoading,
     error: genderError,
   } = useDashboardGender(apiFilters);
-
+  console.log(genderData);
+  
   const {
     data: objectTypeData,
     isLoading: objectTypeLoading,

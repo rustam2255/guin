@@ -30,10 +30,10 @@ export type PrisonerListItem = {
   last_name?: string;
   father_name?: string;
   full_name: string;
-
+  smena: string;
   gender?: string;
   gender_label?: string | null;
-
+  smena_label: string;
   birth_date?: string | null;
   citizenship?: string | null;
   pinfl?: string | null;

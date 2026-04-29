@@ -1,7 +1,8 @@
-import { useMemo, useState } from "react";
-import { Link, useLocation, useParams } from "react-router-dom";
-import { ArrowDownIcon, ArrowLeft } from "lucide-react";
+import {  useMemo, useState } from "react";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import { ArrowDownIcon, ArrowLeft, Camera } from "lucide-react";
 import { useTranslation } from "react-i18next";
+
 import type { AttendanceResultStatus } from "../../entities/attendance/types/attendance-prisoner.types";
 import DashboardLayout from "../../app/layout/dashboard-layout";
 import LoadingSpinner from "../../shared/loading/loading.spinner";
@@ -9,6 +10,7 @@ import { useAuthStore } from "../../entities/auth/model/auth.store";
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import { useAttendancePrisonerLevel } from "../../entities/attendance/api/use-attendance-prisoner.api";
 import type { UserRole } from "../../entities/attendance/api/attendance-prisoner.service";
+
 const statusClass: Record<string, string> = {
   present: "text-[#17b26a]",
   missed: "text-red-500",
@@ -36,6 +38,7 @@ function formatDateTime(value?: string | null, lang: string = "uz") {
 export default function InspectionDetailPage() {
   const { t, i18n } = useTranslation();
 
+  const navigate = useNavigate()
   const { attendanceTimeId } = useParams();
   const location = useLocation();
 
@@ -50,8 +53,7 @@ export default function InspectionDetailPage() {
 
   const [search, setSearch] = useState("");
   const [submittedSearch, setSubmittedSearch] = useState("");
-  const [resultStatus, setResultStatus] =
-  useState<AttendanceResultStatus>("");
+  const [resultStatus, setResultStatus] = useState<AttendanceResultStatus>("");
   const [limit] = useState(20);
   const [offset, setOffset] = useState(0);
 
@@ -121,28 +123,45 @@ export default function InspectionDetailPage() {
     <DashboardLayout>
       <div className="min-h-screen bg-[#f5f6fa]">
         <div className="space-y-4">
-          <div className="flex flex-col gap-4 rounded-2xl bg-white px-5 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex flex-col gap-4 rounded-2xl bg-white px-4 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
             <div>
-              <h1 className="text-xl font-semibold text-[#101828]">
+              <h1 className="text-lg font-semibold text-[#101828] sm:text-xl">
                 {t("inspection_detail.title")}
               </h1>
 
-              <p className="mt-1 text-sm text-gray-500">
+              <p className="mt-1 text-xs text-gray-500 sm:text-sm">
                 {t("inspection_detail.selected_id")}: {attendanceTimeId}
               </p>
             </div>
+            <div className="flex gap-6">
+              <button
+                onClick={() => navigate(`/camera`)}
+                className="
+    flex items-center cursor-pointer justify-center
+    rounded-xl bg-blue-50 text-blue-600
+    hover:bg-blue-100 transition
+    h-5  w-10
+    sm:h-5 sm:w-11
+    lg:h-7 lg:w-12
+    2xl:h-11 2xl:w-14
+  "
+              >
+                <Camera className="h-5 w-5" />
+              </button>
 
-            <Link
-              to="/count"
-              className="flex h-11 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 hover:bg-gray-50"
-            >
-              <ArrowLeft size={18} />
-              {t("common.back")}
-            </Link>
+              <Link
+                to="/count"
+                className="flex h-10 items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-4 text-sm font-medium text-gray-700 hover:bg-gray-50 sm:h-11"
+              >
+                <ArrowLeft size={18} />
+                {t("common.back")}
+              </Link>
+            </div>
+
           </div>
 
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
               <InfoCard
                 title={t("filters.region")}
                 value={attendance?.region || firstItem?.region_name || "-"}
@@ -164,14 +183,14 @@ export default function InspectionDetailPage() {
                   attendance
                     ? `${attendance.sana || "-"} ${attendance.time || ""}`
                     : firstItem
-                    ? `${firstItem.date || "-"} ${firstItem.time_range || ""}`
-                    : "-"
+                      ? `${firstItem.date || "-"} ${firstItem.time_range || ""}`
+                      : "-"
                 }
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
             <StatCard title={t("common.total")} value={items.length} />
 
             <StatCard
@@ -193,8 +212,8 @@ export default function InspectionDetailPage() {
             />
           </div>
 
-          <div className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-5 shadow-sm lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <input
                 value={search}
                 onChange={(e) => {
@@ -207,18 +226,16 @@ export default function InspectionDetailPage() {
                   }
                 }}
                 onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    handleSearch();
-                  }
+                  if (e.key === "Enter") handleSearch();
                 }}
                 placeholder={t("inspection_detail.search_placeholder")}
-                className="h-11 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-[#1565d8] sm:w-[340px]"
+                className="h-10 w-full rounded-xl border border-gray-200 bg-white px-4 text-sm outline-none focus:border-[#1565d8] sm:w-[300px] lg:w-[340px] xl:h-11"
               />
 
               <button
                 type="button"
                 onClick={handleSearch}
-                className="h-11 rounded-xl bg-[#1565d8] px-7 text-sm font-medium text-white hover:bg-[#1257bb]"
+                className="h-10 rounded-xl bg-[#1565d8] px-6 text-sm font-medium text-white hover:bg-[#1257bb] xl:h-11"
               >
                 {t("filters.search")}
               </button>
@@ -230,7 +247,7 @@ export default function InspectionDetailPage() {
                     setResultStatus(e.target.value as AttendanceResultStatus);
                     setOffset(0);
                   }}
-                  className="h-11 w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-[#1565d8]"
+                  className="h-10 w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-[#1565d8] sm:w-[180px] xl:h-11"
                 >
                   <option value="">{t("common.all")}</option>
                   <option value="present">
@@ -250,7 +267,7 @@ export default function InspectionDetailPage() {
               </div>
             </div>
 
-            <div className="flex h-11 min-w-[150px] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700">
+            <div className="flex h-10 min-w-[140px] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 xl:h-11">
               <span>{t("registry.prisoners")}:</span>
               <span className="font-semibold text-gray-900">{count}</span>
             </div>
@@ -258,31 +275,31 @@ export default function InspectionDetailPage() {
 
           <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             <div className="overflow-x-auto">
-              <table className="w-full min-w-[1100px] border-separate border-spacing-0">
+              <table className="w-full min-w-[760px] border-separate border-spacing-0 xl:min-w-[980px]">
                 <thead>
-                  <tr className="bg-[#f8f9fb] text-left text-[13px] font-semibold text-[#344054]">
-                    <th className="border-b border-gray-200 px-5 py-5">
+                  <tr className="bg-[#f8f9fb] text-left text-[11px] font-semibold text-[#344054] xl:text-[13px]">
+                    <th className="w-[45px] border-b border-gray-200 px-2 py-3 text-center xl:px-4 xl:py-4">
                       {t("table.id")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">
                       {t("registry.full_name")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="w-[80px] border-b border-gray-200 px-2 py-3 xl:w-[100px] xl:px-4 xl:py-4">
                       {t("inspection_detail.face_id")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[130px] xl:px-4 xl:py-4">
                       {t("filters.colony")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">
                       {t("inspection_detail.object")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">
                       {t("inspection_detail.date")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="w-[120px] border-b border-gray-200 px-2 py-3 xl:w-[150px] xl:px-4 xl:py-4">
                       {t("inspection_detail.recorded_at")}
                     </th>
-                    <th className="border-b border-gray-200 px-5 py-5">
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">
                       {t("table.status")}
                     </th>
                   </tr>
@@ -320,45 +337,54 @@ export default function InspectionDetailPage() {
                     paginatedItems.map((item, index) => (
                       <tr
                         key={`${item.attendance_prisoner_id}-${item.prisoner?.id}`}
-                        className="text-sm text-[#101828] hover:bg-gray-50"
+                        className="text-[11px] text-[#101828] hover:bg-gray-50 xl:text-sm"
                       >
-                        <td className="border-b border-gray-100 px-5 py-5">
+                        <td className="border-b border-gray-100 px-2 py-3 text-center xl:px-4 xl:py-4">
                           {offset + index + 1}
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5 font-medium">
-                          {item.prisoner?.full_name || "-"}
+                        <td className="max-w-[140px] border-b border-gray-100 px-2 py-3 font-medium xl:max-w-[220px] xl:px-4 xl:py-4">
+                          <span className="block truncate">
+                            {item.prisoner?.full_name || "-"}
+                          </span>
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5">
-                          {item.prisoner?.face_employee_no || "-"}
+                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
+                          <span className="block truncate">
+                            {item.prisoner?.face_employee_no || "-"}
+                          </span>
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5">
-                          {item.colony_name || "-"}
+                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
+                          <span className="block truncate">
+                            {item.colony_name || "-"}
+                          </span>
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5">
-                          {item.object_name || "-"}
+                        <td className="max-w-[150px] border-b border-gray-100 px-2 py-3 xl:max-w-[240px] xl:px-4 xl:py-4">
+                          <span className="block truncate">
+                            {item.object_name || "-"}
+                          </span>
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5">
+                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
                           {item.date || "-"}
                         </td>
 
-                        <td className="border-b border-gray-100 px-5 py-5">
-                          {formatDateTime(item.recorded_at, i18n.language)}
+                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
+                          <span className="block leading-4">
+                            {formatDateTime(item.recorded_at, i18n.language)}
+                          </span>
                         </td>
 
                         <td
-                          className={`border-b border-gray-100 px-5 py-5 font-semibold ${
-                            statusClass[item.result_status] || "text-gray-500"
-                          }`}
+                          className={`border-b border-gray-100 px-2 py-3 font-semibold xl:px-4 xl:py-4 ${statusClass[item.result_status] || "text-gray-500"
+                            }`}
                         >
                           {item.result_status
                             ? t(`attendance_status.${item.result_status}`, {
-                                defaultValue: item.result_status,
-                              })
+                              defaultValue: item.result_status,
+                            })
                             : "-"}
                         </td>
                       </tr>
@@ -368,7 +394,7 @@ export default function InspectionDetailPage() {
               </table>
             </div>
 
-            <div className="flex flex-col gap-3 border-t border-gray-100 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-600">
                 {t("common.total")}:{" "}
                 <span className="font-semibold text-gray-900">{count}</span>
@@ -403,8 +429,8 @@ export default function InspectionDetailPage() {
 
 function InfoCard({ title, value }: { title: string; value: string }) {
   return (
-    <div className="rounded-xl border border-gray-200 bg-[#f8f9fb] px-4 py-3">
-      <p className="text-sm text-gray-500">{title}</p>
+    <div className="rounded-xl border border-gray-200 bg-[#f8f9fb] px-3 py-3 sm:px-4">
+      <p className="text-xs text-gray-500 sm:text-sm">{title}</p>
       <p className="mt-1 truncate text-sm font-semibold text-[#101828]">
         {value}
       </p>
@@ -422,9 +448,9 @@ function StatCard({
   color?: string;
 }) {
   return (
-    <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
-      <p className="text-sm text-gray-500">{title}</p>
-      <p className={`mt-2 text-2xl font-bold ${color}`}>{value}</p>
+    <div className="rounded-2xl bg-white px-4 py-3 shadow-sm sm:px-5 sm:py-4">
+      <p className="text-xs text-gray-500 sm:text-sm">{title}</p>
+      <p className={`mt-2 text-xl font-bold sm:text-2xl ${color}`}>{value}</p>
     </div>
   );
 }

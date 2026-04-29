@@ -1,5 +1,5 @@
 import { useTranslation } from "react-i18next";
-import { Link } from "react-router-dom"; // 🔥 SHU QATOR QO‘SHILDI
+import { Link } from "react-router-dom";
 import type { TableItem } from "../pages/count/table";
 
 type Props = {
@@ -7,16 +7,15 @@ type Props = {
 };
 
 const columnClass =
-  "flex min-w-0 items-center justify-center px-2 text-center";
+  "flex min-w-0 items-center justify-center max-w-[140px]  xl:max-w-[220px]  px-1 text-center sm:px-2";
 
 const StatusTable = ({ data }: Props) => {
   const { t } = useTranslation();
 
   return (
     <div className="w-full overflow-x-auto">
-      <div className="min-w-[1100px]">
-        {/* HEADER */}
-        <div className="grid grid-cols-[70px_1fr_1fr_1.2fr_1.8fr_1fr_1fr_1fr] rounded-lg border border-blue-300 bg-white px-4 py-3 text-[14px] font-medium text-black">
+      <div className="min-w-[760px] lg:min-w-[900px] xl:min-w-[1050px]">
+        <div className="grid grid-cols-[42px_0.8fr_0.8fr_1fr_1.45fr_0.85fr_0.75fr_0.8fr] rounded-lg border border-blue-300 bg-white px-2 py-2 text-[11px] font-medium text-black sm:px-3 sm:text-[12px] lg:px-4 lg:py-3 lg:text-[14px]">
           <div className={columnClass}>{t("table.id")}</div>
           <div className={columnClass}>{t("table.region")}</div>
           <div className={columnClass}>{t("table.province")}</div>
@@ -27,14 +26,13 @@ const StatusTable = ({ data }: Props) => {
           <div className={columnClass}>{t("table.status")}</div>
         </div>
 
-        {/* BODY */}
         <div className="mt-2 space-y-2">
           {data.map((item) => (
             <Link
               key={`${item.id}-${item.object}-${item.time}`}
-              to={`/inspection/${item.attendanceTimeId}`} // 🔥 ASOSIY JOY
+              to={`/inspection/${item.attendanceTimeId}`}
               state={{ attendance: item }}
-              className="grid grid-cols-[70px_1fr_1fr_1.2fr_1.8fr_1fr_1fr_1fr] items-center rounded-xl bg-white px-4 py-3 text-[14px] shadow-sm hover:bg-blue-50 transition"
+              className="grid grid-cols-[42px_0.8fr_0.8fr_1fr_1.45fr_0.85fr_0.75fr_0.8fr] items-center rounded-xl bg-white px-2 py-2 text-[11px] shadow-sm transition hover:bg-blue-50 sm:px-3 sm:text-[12px] lg:px-4 lg:py-3 lg:text-[14px]"
             >
               <div className={columnClass}>{item.id}</div>
 
@@ -50,28 +48,25 @@ const StatusTable = ({ data }: Props) => {
                 <span className="truncate">{item.colony}</span>
               </div>
 
-              {/* 🔥 OBJECT BOSILADI */}
               <div className={columnClass}>
                 <span className="truncate font-medium text-blue-600 hover:underline">
                   {item.object}
                 </span>
               </div>
 
-              <div className={`${columnClass} flex-col text-[12px]`}>
-                <span>{item.sana}</span>
-                <span className="text-gray-500">{item.time}</span>
+              <div className={`${columnClass} flex-col text-[10px] sm:text-[11px] lg:text-[12px]`}>
+                <span className="truncate">{item.sana}</span>
+                <span className="truncate text-gray-500">{item.time}</span>
               </div>
 
               <div className={`${columnClass} font-semibold`}>
                 <span className="text-green-500">{item.present}</span>
-                <span className="mx-1 text-gray-400">/</span>
+                <span className="mx-0.5 text-gray-400 sm:mx-1">/</span>
                 <span className="text-blue-600">{item.totalAll}</span>
               </div>
 
-              <div
-                className={`${columnClass} font-semibold ${item.statusColor}`}
-              >
-                {item.status}
+              <div className={`${columnClass} font-semibold ${item.statusColor}`}>
+                <span className="truncate">{item.status}</span>
               </div>
             </Link>
           ))}

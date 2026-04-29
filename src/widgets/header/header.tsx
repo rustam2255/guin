@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Check, LogOut, Phone, Shield, User } from "lucide-react";
+import {  Check, LogOut, Phone, Shield, User } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useProfile } from "../../entities/auth/hooks/use-profile";
 import { useLogout } from "../../entities/auth/hooks/use-logout";
@@ -15,6 +15,7 @@ const languages: { value: AppLang; label: string }[] = [
 
 export default function Header() {
   const [open, setOpen] = useState(false);
+
 
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
@@ -86,7 +87,9 @@ export default function Header() {
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">
+      
         <div className="relative shrink-0" ref={dropdownRef}>
+
           <button
             type="button"
             onClick={() => setOpen((prev) => !prev)}
@@ -241,10 +244,9 @@ export default function Header() {
                             flex h-8 flex-1 items-center justify-center gap-1 rounded-lg border text-[11px] font-semibold transition
                             2xl:h-9 2xl:text-xs
                             min-[1800px]:h-10 min-[1800px]:text-[13px]
-                            ${
-                              isActive
-                                ? "border-[rgba(15,95,194,1)] bg-[rgba(15,95,194,1)] text-white"
-                                : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
+                            ${isActive
+                              ? "border-[rgba(15,95,194,1)] bg-[rgba(15,95,194,1)] text-white"
+                              : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
                             }
                           `}
                         >
