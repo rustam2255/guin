@@ -62,9 +62,9 @@ export default function Header() {
     <header
       className="
         relative flex items-center justify-between 
-        px-4 py-3
-        sm:px-5 sm:py-3.5
-        lg:px-6 lg:py-4
+        px-4 py-1
+        sm:px-5 sm:py-1
+        lg:px-6 lg:py-1
         xl:px-8
         2xl:min-h-[96px] 2xl:px-10
         min-[1800px]:min-h-[108px] min-[1800px]:px-12
@@ -83,7 +83,7 @@ export default function Header() {
           min-[2200px]:text-[36px]
         "
       >
-        JIEBB
+        JIED
       </h1>
 
       <div className="flex items-center gap-2 sm:gap-3">

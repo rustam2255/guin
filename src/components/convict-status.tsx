@@ -6,6 +6,7 @@ import {
   Tooltip,
   Legend,
   type ChartOptions,
+  type Plugin,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { useEffect, useMemo, useState } from "react";
@@ -23,8 +24,8 @@ type PrisonStatusChartProps = {
   }[];
 };
 
-export default function PrisonStatusChart({ 
-  title ,
+export default function PrisonStatusChart({
+  title,
   total,
   labels,
   datasets,
@@ -47,6 +48,7 @@ export default function PrisonStatusChart({
   const chartHeight = useMemo(() => {
     const perItem = isMobile ? 28 : isTablet ? 34 : isUltraWide ? 44 : 38;
     const base = isMobile ? 30 : 40;
+
     return Math.max(isMobile ? 180 : 240, labels.length * perItem + base);
   }, [labels.length, isMobile, isTablet, isUltraWide]);
 
@@ -56,6 +58,47 @@ export default function PrisonStatusChart({
     if (isUltraWide) return 16;
     return 12;
   }, [isMobile, isTablet, isUltraWide]);
+
+  const valueInsideBarPlugin: Plugin<"bar"> = useMemo(
+    () => ({
+      id: "valueInsideBarPlugin",
+
+      afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+
+        ctx.save();
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillStyle = "#ffffff";
+        ctx.font = `600 ${
+          isMobile ? 8 : isTablet ? 9 : isUltraWide ? 13 : 10
+        }px Inter, sans-serif`;
+
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+          const meta = chart.getDatasetMeta(datasetIndex);
+
+          meta.data.forEach((bar, index) => {
+            const value = Number(dataset.data[index]);
+
+            if (!value || value <= 0) return;
+
+            const props = bar.getProps(["x", "y", "base"], true);
+            const barWidth = Math.abs(props.x - props.base);
+
+            if (barWidth < 18) return;
+
+            const x = props.base + (props.x - props.base) / 2;
+            const y = props.y;
+
+            ctx.fillText(String(value), x, y);
+          });
+        });
+
+        ctx.restore();
+      },
+    }),
+    [isMobile, isTablet, isUltraWide]
+  );
 
   const options: ChartOptions<"bar"> = useMemo(
     () => ({
@@ -91,8 +134,10 @@ export default function PrisonStatusChart({
             },
             callback: (value) => {
               const numericValue = Number(value);
+
               if (numericValue === 0) return "0";
               if (numericValue >= 1000) return numericValue / 1000 + "K";
+
               return String(numericValue);
             },
           },
@@ -180,7 +225,11 @@ export default function PrisonStatusChart({
           height: `${chartHeight}px`,
         }}
       >
-        <Bar data={data} options={options} />
+        <Bar
+          data={data}
+          options={options}
+          plugins={[valueInsideBarPlugin]}
+        />
       </div>
     </div>
   );
