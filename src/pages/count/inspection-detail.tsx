@@ -121,17 +121,13 @@ export default function InspectionDetailPage() {
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-[#f5f6fa]">
+      <div className="min-h-screen mx-auto w-full max-w-[2200px]  bg-[#f5f6fa]">
         <div className="space-y-4">
           <div className="flex flex-col gap-4 rounded-2xl bg-white px-4 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-lg font-semibold text-[#101828] sm:text-xl">
                 {t("inspection_detail.title")}
               </h1>
-
-              <p className="mt-1 text-xs text-gray-500 sm:text-sm">
-                {t("inspection_detail.selected_id")}: {attendanceTimeId}
-              </p>
             </div>
             <div className="flex gap-6">
               <button

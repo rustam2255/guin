@@ -8,6 +8,8 @@ const initialFilters: DashboardFilters = {
   colonyId: "",
   objectTypeId: "",
   placeObjectId: "",
+  createdAtAfter: "",
+  createdAtBefore: "",
 };
 
 type DashboardFiltersStore = {
@@ -19,8 +21,12 @@ type DashboardFiltersStore = {
   setColonyId: (value: string) => void;
   setObjectTypeId: (value: string) => void;
   setPlaceObjectId: (value: string) => void;
+  setCreatedAtAfter: (value: string) => void;
+  setCreatedAtBefore: (value: string) => void;
+
   setRegionAndApply: (regionId: string) => void;
   setRegionProvinceAndApply: (regionId: string, provinceId: string) => void;
+
   applyFilters: () => void;
   resetDraftFilters: () => void;
   resetAllFilters: () => void;
@@ -31,37 +37,7 @@ export const useDashboardFiltersStore = create<DashboardFiltersStore>()(
     (set) => ({
       draftFilters: initialFilters,
       appliedFilters: initialFilters,
-      setRegionAndApply: (regionId) =>
-        set(() => {
-          const nextFilters = {
-            regionId,
-            provinceId: "",
-            colonyId: "",
-            objectTypeId: "",
-            placeObjectId: "",
-          };
 
-          return {
-            draftFilters: nextFilters,
-            appliedFilters: nextFilters,
-          };
-        }),
-
-      setRegionProvinceAndApply: (regionId, provinceId) =>
-        set(() => {
-          const nextFilters = {
-            regionId,
-            provinceId,
-            colonyId: "",
-            objectTypeId: "",
-            placeObjectId: "",
-          };
-
-          return {
-            draftFilters: nextFilters,
-            appliedFilters: nextFilters,
-          };
-        }),
       setRegionId: (value) =>
         set((state) => ({
           draftFilters: {
@@ -112,9 +88,61 @@ export const useDashboardFiltersStore = create<DashboardFiltersStore>()(
           },
         })),
 
+      setCreatedAtAfter: (value) =>
+        set((state) => ({
+          draftFilters: {
+            ...state.draftFilters,
+            createdAtAfter: value,
+          },
+        })),
+
+      setCreatedAtBefore: (value) =>
+        set((state) => ({
+          draftFilters: {
+            ...state.draftFilters,
+            createdAtBefore: value,
+          },
+        })),
+
+      setRegionAndApply: (regionId) =>
+        set((state) => {
+          const nextFilters: DashboardFilters = {
+            ...state.draftFilters,
+            regionId,
+            provinceId: "",
+            colonyId: "",
+            objectTypeId: "",
+            placeObjectId: "",
+          };
+
+          return {
+            draftFilters: nextFilters,
+            appliedFilters: nextFilters,
+          };
+        }),
+
+      setRegionProvinceAndApply: (regionId, provinceId) =>
+        set((state) => {
+          const nextFilters: DashboardFilters = {
+            ...state.draftFilters,
+            regionId,
+            provinceId,
+            colonyId: "",
+            objectTypeId: "",
+            placeObjectId: "",
+          };
+
+          return {
+            draftFilters: nextFilters,
+            appliedFilters: nextFilters,
+          };
+        }),
+
       applyFilters: () =>
         set((state) => ({
-          appliedFilters: { ...state.draftFilters },
+          appliedFilters: {
+            ...state.draftFilters,
+          },
         })),
 
       resetDraftFilters: () =>

@@ -3,8 +3,7 @@ import DashboardPage from "../../pages/dashboard/dashboard-page";
 import LoginPage from "../../pages/auth/login-page";
 import TablePage from "../../pages/count/table";
 import RegistryPage from "../../pages/registery/register";
-import Globe from "../../pages/globe/Globe";
-import Province from "../../pages/province/province";
+
 import ProtectedRoute from "./protected-route";
 
 import RegistryIdPage from "../../pages/registery/registerId";
@@ -85,23 +84,9 @@ export default function AppRouter() {
           }
         />
 
-        <Route
-          path="/region/:regionId"
-          element={
-            <ProtectedRoute>
-              <Globe />
-            </ProtectedRoute>
-          }
-        />
+    
 
-        <Route
-          path="/region/:regionId/:provinceId"
-          element={
-            <ProtectedRoute>
-              <Province />
-            </ProtectedRoute>
-          }
-        />
+     
 
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

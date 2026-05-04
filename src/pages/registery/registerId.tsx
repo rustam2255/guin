@@ -178,7 +178,7 @@ export default function RegistryIdPage() {
     <DashboardLayout>
       <div className="min-h-screen bg-[#f5f6fa]">
         <div className="flex flex-col gap-4 lg:flex-row">
-          <div className="w-full rounded-3xl bg-white p-3 shadow-sm lg:w-[260px]">
+          <div className="mx-auto w-full max-w-[2200px]  rounded-3xl bg-white p-3 shadow-sm lg:w-[260px]">
             <div className="rounded-2xl border border-[#D8E5FF] p-4">
               <img
                 src={

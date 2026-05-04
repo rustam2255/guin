@@ -8,14 +8,24 @@ export type AttendanceSessionStatus = "scheduled" | "active" | "completed" | str
 
 export type AttendanceDashboardParams = {
   lang?: string;
-  attendance_time?: number;
+
+  attendance_time?: number | string;
   date?: string;
-  region?: string | number;
-  colony?: string | number;
-  object?: string | number;
-  session_status?: string;
+
+  region?: number | string;
+  colony?: number | string;
+  object?: number | string;
+
+  session_status?: AttendanceSessionStatus;
   time_type?: AttendanceTimeType;
-  result_status?: AttendanceResultStatus | "";
+
+  result_status?: AttendanceResultStatus;
+
+  emergency_check?: boolean;
+  requirement_check?: boolean;
+
+  created_at_after?: string;
+  created_at_before?: string;
 };
 
 export type BaseReference = {
@@ -30,6 +40,8 @@ export type AttendanceTime = {
   ends_at: string;
   status: AttendanceSessionStatus;
   time_type: AttendanceTimeType;
+    emergency_check: boolean;
+  requirement_check: boolean;
 };
 
 export type RegionReference = BaseReference & {
@@ -75,6 +87,8 @@ export type AttendanceObjectLevelItem = {
   missed_count: number;
   progress_percentage: number;
   progress_text?: string;
+  emergency_check: boolean;
+  requirement_check: boolean;
 };
 export type AttendanceObjectLevelSummary = {
   active_sessions_count: number;

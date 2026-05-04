@@ -167,17 +167,12 @@ export default function Sidebar() {
           </button>
         </div>
 
-        <img
-          src="/rename.png"
-          alt="Logo"
-          className="
-            h-[72px] w-[72px] object-contain
-            sm:h-[80px] sm:w-[80px]
-            lg:h-[90px] lg:w-[90px]
-            2xl:h-[104px] 2xl:w-[104px]
-            min-[1800px]:h-[118px] min-[1800px]:w-[118px]
-          "
-        />
+        <div className="logo-container">
+          <div className="logo-inner">
+            <img src="/rename.png" className="logo-face front" />
+            <img src="/second.png" className="logo-face back" />
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           <Hexagon className="h-[18px] w-[18px] sm:h-[19px] sm:w-[19px] lg:h-[20px] lg:w-[20px]" />
@@ -264,9 +259,8 @@ export default function Sidebar() {
                     >
                       <ChevronDown
                         size={18}
-                        className={`transition-transform duration-200 ${
-                          isOpen ? "rotate-180" : ""
-                        }`}
+                        className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""
+                          }`}
                       />
                     </button>
                   )}
@@ -274,9 +268,8 @@ export default function Sidebar() {
 
                 {!!item.children.length && (
                   <div
-                    className={`overflow-hidden transition-all duration-300 ${
-                      isOpen ? "mt-1.5 max-h-[1000px]" : "max-h-0"
-                    }`}
+                    className={`overflow-hidden transition-all duration-300 ${isOpen ? "mt-1.5 max-h-[1000px]" : "max-h-0"
+                      }`}
                   >
                     <div className="space-y-1.5 pl-3 sm:pl-4 lg:pl-5">
                       {item.children.map((child) => {
@@ -301,10 +294,9 @@ export default function Sidebar() {
                               sm:px-3.5 sm:py-2.5 sm:text-[14px]
                               lg:px-4 lg:py-2.5 lg:text-[14px]
                               2xl:px-4.5 2xl:py-3 2xl:text-[15px]
-                              ${
-                                childActive
-                                  ? "bg-[rgba(229,241,255,1)] font-semibold text-[rgba(15,95,194,1)]"
-                                  : "text-gray-700 hover:bg-gray-100"
+                              ${childActive
+                                ? "bg-[rgba(229,241,255,1)] font-semibold text-[rgba(15,95,194,1)]"
+                                : "text-gray-700 hover:bg-gray-100"
                               }
                             `}
                           >
@@ -345,10 +337,9 @@ export default function Sidebar() {
         onClick={closeMobileSidebar}
         className={`
           fixed inset-0 z-[60] bg-black/40 backdrop-blur-[2px] transition-opacity duration-300 lg:hidden
-          ${
-            mobileOpen
-              ? "pointer-events-auto opacity-100"
-              : "pointer-events-none opacity-0"
+          ${mobileOpen
+            ? "pointer-events-auto opacity-100"
+            : "pointer-events-none opacity-0"
           }
         `}
       />

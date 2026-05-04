@@ -67,4 +67,6 @@ export type DashboardFilters = {
   colonyId: string;
   objectTypeId: string;
   placeObjectId: string;
+  createdAtAfter: string;
+  createdAtBefore: string;
 };

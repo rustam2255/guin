@@ -25,7 +25,7 @@ export type AttendancePrisonerLevelItem = {
   region_name: string;
   colony_name: string;
   object_name: string;
-
+  attendance_time: boolean;
   prisoner: {
     id: number;
     full_name: string;

@@ -34,6 +34,7 @@ function getStatusText(status: unknown) {
   return "-";
 }
 
+
 export default function RegistryPage() {
   const { t } = useTranslation();
 
@@ -63,8 +64,23 @@ export default function RegistryPage() {
       colony: appliedFilters.colonyId || undefined,
       place_object: appliedFilters.placeObjectId || undefined,
       object_type: appliedFilters.objectTypeId || undefined,
+
+      created_at_after: appliedFilters.createdAtAfter,
+      created_at_before: appliedFilters.createdAtBefore,
     };
-  }, [limit, offset, submittedSearch, selectedSmena, appliedFilters]);
+  }, [
+    limit,
+    offset,
+    submittedSearch,
+    selectedSmena,
+    appliedFilters.regionId,
+    appliedFilters.provinceId,
+    appliedFilters.colonyId,
+    appliedFilters.placeObjectId,
+    appliedFilters.objectTypeId,
+    appliedFilters.createdAtAfter,
+    appliedFilters.createdAtBefore,
+  ]);
 
   const prisonersQuery = usePrisonersList(role, params);
 
@@ -87,7 +103,7 @@ export default function RegistryPage() {
   return (
     <DashboardLayout>
       <div className="min-h-screen bg-[#f5f6fa] px-2 py-3 sm:px-3 lg:px-0 lg:py-0">
-        <div className="mx-auto w-full max-w-[1800px] space-y-3 sm:space-y-4">
+        <div className="mx-auto w-full max-w-[2200px] space-y-3 sm:space-y-4">
           <DashboardFiltersBar />
 
           <div className="rounded-2xl bg-white p-3 shadow-sm sm:p-4 lg:p-5">
@@ -275,7 +291,7 @@ export default function RegistryPage() {
                         <th className="min-w-[135px] border-b border-gray-200 px-2 py-3 lg:px-3 xl:px-4 xl:py-4">
                           {t("registry.object")}
                         </th>
-                      
+
                         <th className="min-w-[105px] border-b border-gray-200 px-2 py-3 lg:px-3 xl:px-4 xl:py-4">
                           {t("registry.start_date")}
                         </th>

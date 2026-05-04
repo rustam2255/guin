@@ -6,7 +6,7 @@ import InfoCardsGrid from "../../components/OtherPrisonerInfo";
 // import RegionOverviewCards from "../../components/RegionOverwievCards"
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import { useDashboardGender } from "../../entities/dashboard/hooks/use-dashboard-gender";
-import { UserCheck, Users } from "lucide-react";
+import { Activity, UserCheck, Users } from "lucide-react";
 import DashboardStatsGrid from "../../components/DashboardStatsGrid";
 import { useDashboardObjectType } from "../../entities/dashboardObjectType/hook/use-dashboard-object.api";
 import { useDashboardDisease } from "../../entities/disease/hooks/use-dashboard-disease";
@@ -24,6 +24,8 @@ import { transformStatusResultsToDoughnut } from "../../shared/helpers/transform
 import { useAuthStore } from "../../entities/auth/model/auth.store";
 import { useStatusBreakdown } from "../../entities/regionForDashboard/hooks/use-region-status";
 import { useTranslation } from "react-i18next";
+import { useAttendanceObjectLevel } from "../../entities/attendance/api/use-attendance.api";
+import { useCameraEvents } from "../../entities/events/api/useCameraEvents";
 export default function DashboardPage() {
   const role = useAuthStore((state) => state.profile?.role);
   const { appliedFilters } = useDashboardFiltersStore();
@@ -60,7 +62,10 @@ export default function DashboardPage() {
     error: genderError,
   } = useDashboardGender(apiFilters);
   console.log(genderData);
-  
+  const objectLevelQuery = useAttendanceObjectLevel(role, apiFilters);
+  console.log(objectLevelQuery.data);
+  const cameraEventsQuery = useCameraEvents(role, apiFilters);
+  const totalCameraEventsCount = cameraEventsQuery.data?.count ?? 0;
   const {
     data: objectTypeData,
     isLoading: objectTypeLoading,
@@ -95,6 +100,35 @@ export default function DashboardPage() {
     UsersIcon: Users,
     UserCheckIcon: UserCheck,
   });
+  const attendanceNotPassedCount = useMemo(() => {
+    const items = objectLevelQuery.data?.items ?? [];
+
+    return items.reduce((sum, item) => {
+      return sum + Number(item.missed_count || 0);
+    }, 0);
+  }, [objectLevelQuery.data?.items]);
+
+  const dashboardStatsItems = useMemo(() => {
+    return [
+      ...genderStatsItems,
+      {
+        id: "attendance-not-passed",
+        label: "Yo‘qlamadan o‘tmaganlar",
+        value: attendanceNotPassedCount,
+        icon: UserCheck,
+        iconColor: "text-red-500",
+        valueColor: "text-red-600",
+      },
+      {
+        id: "camera-events-total",
+        label: "Umumiy harakatlar soni",
+        value: totalCameraEventsCount,
+        icon: Activity,
+        iconColor: "text-blue-500",
+        valueColor: "text-blue-600",
+      },
+    ];
+  }, [genderStatsItems, attendanceNotPassedCount, totalCameraEventsCount]);
   const breakdownDoughnutItems = useMemo(() => {
     if (role === "KALONIYA_ADMIN") {
       const colors = [
@@ -167,7 +201,7 @@ export default function DashboardPage() {
             {t("dashboard.gender_error")}
           </div>
         ) : (
-          <DashboardStatsGrid items={genderStatsItems} />
+          <DashboardStatsGrid items={dashboardStatsItems} />
         )}
         {/* <RegionOverviewCards
   doughnutTitle="Mintaqalar kesimida"

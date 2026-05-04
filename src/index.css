@@ -35,3 +35,45 @@ body {
   width: 0;
   height: 0;
 }
+.logo-container {
+  perspective: 1000px;
+  width: 114px;
+  height: 114px;
+}
+
+.logo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: flipCoin 8s infinite ease-in-out;
+}
+
+.logo-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  backface-visibility: hidden;
+}
+
+.front {
+  transform: rotateY(0deg);
+}
+
+.back {
+  transform: rotateY(180deg);
+}
+
+/* 🔥 MAGIC */
+@keyframes flipCoin {
+  0% {
+    transform: rotateY(0deg);
+  }
+  50% {
+    transform: rotateY(180deg);
+  }
+  100% {
+    transform: rotateY(360deg);
+  }
+}

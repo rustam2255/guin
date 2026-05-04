@@ -1,48 +1,27 @@
 // src/pages/camera/cameras-page.tsx
 import { useMemo } from "react";
-import { Camera, VideoOff, ExternalLink } from "lucide-react";
+import { Camera, Loader2, VideoOff, PlayCircle } from "lucide-react";
 import DashboardLayout from "../../app/layout/dashboard-layout";
 
-// API vaqtincha o‘chirildi
-// import { Loader2 } from "lucide-react";
-// import { useAuthStore } from "../../entities/auth/model/auth.store";
-// import type { UserRole } from "../../entities/attendance/api/attendance-prisoner.service";
-// import { useCamerasByRole } from "../../entities/live-camera/api/use-camera-stream";
-
-type LocalCamera = {
-  id: number;
-  name: string;
-  url: string;
-};
-
-const LOCAL_CAMERAS: LocalCamera[] = [
-  { id: 1, name: "Kamera 1", url: "http://192.168.88.230" },
-  { id: 2, name: "Kamera 2", url: "http://192.168.88.231" },
-  { id: 3, name: "Kamera 3", url: "http://192.168.88.232" },
-  { id: 4, name: "Kamera 4", url: "http://192.168.88.233" },
-  { id: 5, name: "Kamera 5", url: "http://192.168.88.237" },
-  { id: 6, name: "Kamera 6", url: "http://192.168.88.2" },
-  { id: 7, name: "Kamera 7", url: "http://192.168.88.4" },
-  { id: 8, name: "Kamera 8", url: "http://192.168.88.5" },
- 
-];
+import { useAuthStore } from "../../entities/auth/model/auth.store";
+import type { UserRole } from "../../entities/attendance/api/attendance-prisoner.service";
+import { useCamerasByRole } from "../../entities/live-camera/api/use-camera-stream";
 
 export default function CamerasPage() {
-  // API vaqtincha o‘chirildi
-  // const profile = useAuthStore((state) => state.profile);
-  // const role = (profile?.role ?? "SUPERADMIN") as UserRole;
-  // const { data, isLoading, isError } = useCamerasByRole(role);
-  // const cameras = useMemo(() => data?.items ?? [], [data?.items]);
+  const profile = useAuthStore((state) => state.profile);
+  const role = (profile?.role ?? "SUPERADMIN") as UserRole;
 
-  const cameras = useMemo(() => LOCAL_CAMERAS, []);
+  const { data, isLoading, isError } = useCamerasByRole(role);
 
-  const openCamera = (url: string) => {
-    window.open(url, "_blank", "noopener,noreferrer");
+  const cameras = useMemo(() => data?.items ?? [], [data?.items]);
+
+  const openCameraInNewTab = (cameraId: number | string) => {
+    window.open(`/camera/${cameraId}`, "_blank", "noopener,noreferrer");
   };
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen bg-[#f5f6fa] p-4">
+      <div className="min-h-screen mx-auto w-full max-w-[2200px]  bg-[#f5f6fa] p-3 sm:p-4">
         <div className="mx-auto max-w-7xl space-y-4">
           <div className="rounded-2xl bg-white px-4 py-4 shadow-sm">
             <h1 className="text-lg font-semibold text-[#101828]">
@@ -50,37 +29,47 @@ export default function CamerasPage() {
             </h1>
 
             <p className="mt-1 text-sm text-gray-500">
-               Jami: {cameras.length}
+              Jami: {isLoading ? "..." : cameras.length}
             </p>
           </div>
 
-          {cameras.length === 0 ? (
+          {isLoading ? (
+            <div className="flex h-64 items-center justify-center rounded-2xl bg-white text-gray-500">
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              Kameralar yuklanmoqda...
+            </div>
+          ) : isError ? (
+            <div className="flex h-64 flex-col items-center justify-center rounded-2xl bg-white text-red-500">
+              <VideoOff className="mb-2 h-8 w-8" />
+              Kameralarni yuklashda xatolik yuz berdi
+            </div>
+          ) : cameras.length === 0 ? (
             <div className="flex h-64 flex-col items-center justify-center rounded-2xl bg-white text-gray-500">
               <VideoOff className="mb-2 h-8 w-8" />
               Kamera topilmadi
             </div>
           ) : (
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 xl:grid-cols-4">
               {cameras.map((camera) => (
                 <button
                   key={camera.id}
                   type="button"
-                  onClick={() => openCamera(camera.url)}
-                  className="rounded-2xl cursor-pointer bg-white p-4 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-md"
+                  onClick={() => openCameraInNewTab(camera.id)}
+                  className="group overflow-hidden rounded-xl bg-white text-left shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                      <Camera size={22} />
-                    </div>
+                  <div className="relative flex aspect-video items-center justify-center bg-[#101828]">
+                    <Camera className="h-8 w-8 text-white/70" />
 
-                    <ExternalLink className="h-5 w-5 text-gray-400" />
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
+                      <PlayCircle className="h-9 w-9 text-white" />
+                    </div>
                   </div>
 
-                  <h3 className="mt-4 font-semibold text-[#101828]">
-                    {camera.name}
-                  </h3>
-
-                
+                  <div className="px-2.5 py-2">
+                    <h3 className="truncate text-xs font-semibold text-[#101828] sm:text-sm">
+                      {camera.name}
+                    </h3>
+                  </div>
                 </button>
               ))}
             </div>

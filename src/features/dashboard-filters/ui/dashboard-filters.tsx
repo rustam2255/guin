@@ -59,11 +59,10 @@ function CustomSelect({
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
         className="
-          w-full h-12 rounded-xl border border-[#D9D9D9] bg-white
-          px-4 pr-10 text-[15px] text-[#2B2B2B]
-          outline-none appearance-none
-          focus:border-[#3B82F6] transition
-          disabled:bg-[#F5F5F5] disabled:text-[#9CA3AF] disabled:cursor-not-allowed
+          h-12 w-full appearance-none rounded-xl border border-[#D9D9D9] bg-white
+          px-4 pr-10 text-[15px] text-[#2B2B2B] outline-none
+          transition focus:border-[#3B82F6]
+          disabled:cursor-not-allowed disabled:bg-[#F5F5F5] disabled:text-[#9CA3AF]
         "
       >
         <option value="">{placeholder}</option>
@@ -104,6 +103,8 @@ export default function DashboardFiltersBar() {
     setColonyId,
     setObjectTypeId,
     setPlaceObjectId,
+    setCreatedAtAfter,
+    setCreatedAtBefore,
     applyFilters,
     resetAllFilters,
   } = useDashboardFiltersStore();
@@ -189,7 +190,6 @@ export default function DashboardFiltersBar() {
 
   const scopedObjects = useMemo(() => {
     if (!selectedColonyId) return [];
-
     return objects.filter((item) => getColonyId(item) === selectedColonyId);
   }, [objects, selectedColonyId]);
 
@@ -405,9 +405,8 @@ export default function DashboardFiltersBar() {
 
                   <ChevronDown
                     size={18}
-                    className={`text-[#6B7280] transition ${
-                      isPlaceObjectOpen ? "rotate-180" : ""
-                    }`}
+                    className={`text-[#6B7280] transition ${isPlaceObjectOpen ? "rotate-180" : ""
+                      }`}
                   />
                 </button>
 
@@ -428,10 +427,9 @@ export default function DashboardFiltersBar() {
                           }}
                           className={`
                             w-full rounded-lg px-3 py-2 text-left text-sm transition
-                            ${
-                              selectedPlaceObjectId === option.value
-                                ? "bg-[#EFF6FF] font-semibold text-[#2563EB]"
-                                : "text-[#374151] hover:bg-[#F3F4F6]"
+                            ${selectedPlaceObjectId === option.value
+                              ? "bg-[#EFF6FF] font-semibold text-[#2563EB]"
+                              : "text-[#374151] hover:bg-[#F3F4F6]"
                             }
                           `}
                         >
@@ -446,28 +444,58 @@ export default function DashboardFiltersBar() {
           </div>
         )}
 
-        <div className="col-span-full flex flex-wrap items-center justify-end gap-3 pt-2">
-          <button
-            type="button"
-            onClick={handleApply}
-            className="
-              h-12 rounded-2xl bg-[#2563EB] px-5 text-sm font-semibold text-white
-              shadow-sm cursor-pointer transition hover:bg-[#1D4ED8]
-            "
-          >
-            {t("filters.search")}
-          </button>
+        <div className="col-span-full flex flex-col gap-4 pt-2 lg:flex-row lg:items-end lg:justify-between">
+          <div className="grid w-full grid-cols-1 gap-4 md:grid-cols-2 lg:max-w-[620px]">
+            <div className="space-y-2">
+              <input
+                type="date"
+                value={draftFilters.createdAtAfter}
+                onChange={(e) => setCreatedAtAfter(e.target.value)}
+                className="
+          h-12 w-full rounded-xl border border-[#D9D9D9] bg-white
+          px-4 text-[15px] text-[#2B2B2B] outline-none
+          transition focus:border-[#3B82F6]
+        "
+              />
+            </div>
 
-          <button
-            type="button"
-            onClick={handleReset}
-            className="
-              h-12 rounded-2xl border cursor-pointer border-[#D1D5DB] bg-white px-5
-              text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]
-            "
-          >
-            {t("filters.reset")}
-          </button>
+            <div className="space-y-2">
+              <input
+                type="date"
+                value={draftFilters.createdAtBefore}
+                onChange={(e) => setCreatedAtBefore(e.target.value)}
+                className="
+          h-12 w-full rounded-xl border border-[#D9D9D9] bg-white
+          px-4 text-[15px] text-[#2B2B2B] outline-none
+          transition focus:border-[#3B82F6]
+        "
+              />
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-start gap-3 lg:justify-end">
+            <button
+              type="button"
+              onClick={handleApply}
+              className="
+        h-12 cursor-pointer rounded-2xl bg-[#2563EB] px-5 text-sm font-semibold
+        text-white shadow-sm transition hover:bg-[#1D4ED8]
+      "
+            >
+              {t("filters.search")}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleReset}
+              className="
+        h-12 cursor-pointer rounded-2xl border border-[#D1D5DB] bg-white px-5
+        text-sm font-medium text-[#374151] transition hover:bg-[#F9FAFB]
+      "
+            >
+              {t("filters.reset")}
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -10,6 +10,8 @@ import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.s
 import DashboardFiltersBar from "../../features/dashboard-filters/ui/dashboard-filters";
 import LoadingSpinner from "../../shared/loading/loading.spinner";
 
+type InspectionTab = AttendanceTimeType | "emergency";
+
 export type TableItem = {
   id: number;
   region: string;
@@ -24,8 +26,10 @@ export type TableItem = {
   totalAll: number;
   present: number;
   pending: number;
-   attendanceTimeId: number;
+  attendanceTimeId: number;
   notSent: number;
+  emergency_check: boolean;
+  requirement_check: boolean;
 };
 
 function formatDate(value?: string | null) {
@@ -49,7 +53,20 @@ function formatTimeRange(start?: string | null, end?: string | null) {
   return `${startTime} - ${endTime}`;
 }
 
-const TablePage = () => {
+function formatDateToDot(value?: string) {
+  if (!value) return undefined;
+
+  const [year, month, day] = value.split("-");
+  if (!year || !month || !day) return undefined;
+
+  return `${day}.${month}.${year}`;
+}
+
+function itemSafeDate(value?: string | null) {
+  return value || 0;
+}
+
+export default function TablePage() {
   const { t } = useTranslation();
 
   const profile = useAuthStore((state) => state.profile);
@@ -59,29 +76,32 @@ const TablePage = () => {
     (state) => state.appliedFilters
   );
 
-  const [timeType, setTimeType] = useState<AttendanceTimeType | "">("day");
+  const [timeType, setTimeType] = useState<InspectionTab>("day");
 
-  const statusMap: Record<string, { label: string; color: string }> = {
-    active: {
-      label: t("status.active"),
-      color: "text-blue-500",
-    },
-    finished: {
-      label: t("status.finished"),
-      color: "text-green-600",
-    },
-    scheduled: {
-      label: t("status.scheduled"),
-      color: "text-yellow-500",
-    },
-    canceled: {
-      label: t("status.canceled"),
-      color: "text-red-500",
-    },
-  };
+  const statusMap: Record<string, { label: string; color: string }> = useMemo(
+    () => ({
+      active: {
+        label: t("status.active"),
+        color: "text-blue-500",
+      },
+      finished: {
+        label: t("status.finished"),
+        color: "text-green-600",
+      },
+      scheduled: {
+        label: t("status.scheduled"),
+        color: "text-yellow-500",
+      },
+      canceled: {
+        label: t("status.canceled"),
+        color: "text-red-500",
+      },
+    }),
+    [t]
+  );
 
   const timeTypeCards: {
-    id: AttendanceTimeType | "";
+    id: InspectionTab;
     count: number;
     title: string;
   }[] = [
@@ -95,38 +115,78 @@ const TablePage = () => {
       region: appliedFilters.regionId || undefined,
       colony: appliedFilters.colonyId || undefined,
       object: appliedFilters.placeObjectId || undefined,
-      time_type: timeType || undefined,
+
+      time_type:
+        timeType === "day" || timeType === "night" ? timeType : undefined,
+
+      emergency_check: timeType === "emergency" ? true : undefined,
+
+      created_at_after: formatDateToDot(appliedFilters.createdAtAfter),
+      created_at_before: formatDateToDot(appliedFilters.createdAtBefore),
     };
   }, [
     appliedFilters.regionId,
     appliedFilters.colonyId,
     appliedFilters.placeObjectId,
+    appliedFilters.createdAtAfter,
+    appliedFilters.createdAtBefore,
     timeType,
   ]);
 
   const objectLevelQuery = useAttendanceObjectLevel(role, objectParams);
-  console.log(objectLevelQuery);
-  
+
   const objectLevelItems = useMemo(() => {
     return objectLevelQuery.data?.items ?? [];
   }, [objectLevelQuery.data?.items]);
-  console.log(objectLevelItems);
-    console.log(objectLevelItems);
-    
+
   const filteredItems = useMemo(() => {
     return objectLevelItems
       .filter((item) => {
-        if (!timeType) return true;
+        const isEmergency =
+          item.emergency_check === true ||
+          item.attendance_time?.emergency_check === true;
+
+        if (timeType === "emergency") {
+          return isEmergency;
+        }
+
+        if (isEmergency) {
+          return false;
+        }
+
         return item.attendance_time?.time_type === timeType;
       })
+      .filter((item) => {
+        const itemDate = item.date;
+
+        if (!itemDate) return false;
+
+        if (appliedFilters.createdAtAfter) {
+          if (itemDate < appliedFilters.createdAtAfter) return false;
+        }
+
+        if (appliedFilters.createdAtBefore) {
+          if (itemDate > appliedFilters.createdAtBefore) return false;
+        }
+
+        return true;
+      })
       .sort((a, b) => {
-        const aTime = new Date(a.attendance_time?.starts_at || 0).getTime();
-        const bTime = new Date(b.attendance_time?.starts_at || 0).getTime();
+        const aTime = new Date(
+          itemSafeDate(a.attendance_time?.starts_at)
+        ).getTime();
+        const bTime = new Date(
+          itemSafeDate(b.attendance_time?.starts_at)
+        ).getTime();
 
         return bTime - aTime;
       });
-  }, [objectLevelItems, timeType]);
-console.log(filteredItems);
+  }, [
+    objectLevelItems,
+    timeType,
+    appliedFilters.createdAtAfter,
+    appliedFilters.createdAtBefore,
+  ]);
 
   const tableData: TableItem[] = useMemo(() => {
     return filteredItems.map((item, index) => {
@@ -149,7 +209,7 @@ console.log(filteredItems);
 
       return {
         id: index + 1,
-         attendanceTimeId: item.attendance_time_id,
+        attendanceTimeId: item.attendance_time_id,
         region: item.region?.name || item.region_name || "-",
         province: item.colony?.province_id
           ? `${t("filters.province")} ${item.colony.province_id}`
@@ -165,14 +225,19 @@ console.log(filteredItems);
         totalAll: total,
         present,
         notSent,
+        emergency_check: Boolean(
+          item.emergency_check || item.attendance_time?.emergency_check
+        ),
+        requirement_check: Boolean(
+          item.requirement_check || item.attendance_time?.requirement_check
+        ),
       };
     });
   }, [filteredItems, statusMap, t]);
 
-  const notSentCount = useMemo(() => {
+  const activeCount = useMemo(() => {
     return filteredItems.reduce((sum, item) => {
-      const present = Number(item.present_count || 0);
-      return sum + present;
+      return sum + Number(item.present_count || 0);
     }, 0);
   }, [filteredItems]);
 
@@ -187,7 +252,7 @@ console.log(filteredItems);
 
   return (
     <DashboardLayout>
-      <div className="space-y-6">
+      <div className="space-y-6 mx-auto w-full max-w-[2200px] ">
         <div className="relative w-full">
           <DashboardFiltersBar />
 
@@ -199,7 +264,7 @@ console.log(filteredItems);
 
               <div className="flex h-10 min-w-[78px] items-center justify-center rounded-lg border border-gray-300 bg-white px-4">
                 <span className="text-[14px] font-bold text-green-500">
-                  {notSentCount}
+                  {activeCount}
                 </span>
               </div>
             </div>
@@ -289,6 +354,4 @@ console.log(filteredItems);
       </div>
     </DashboardLayout>
   );
-};
-
-export default TablePage;
+}
