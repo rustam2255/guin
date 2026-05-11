@@ -1,4 +1,3 @@
-import { Globe2, Users } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
 export type StatsItem = {
@@ -17,22 +16,6 @@ type DashboardStatsGridProps = {
 export default function DashboardStatsGrid({ items }: DashboardStatsGridProps) {
   const finalItems: StatsItem[] = [
     ...items,
-    {
-      id: "foreign-citizens",
-      label: "Chet el fuqarolari",
-      value: 0,
-      icon: Globe2,
-      iconColor: "#2563eb",
-      valueColor: "#2f2f2f",
-    },
-    {
-      id: "total-prisoners",
-      label: "Moyilligi bor mahbuslar",
-      value: 0,
-      icon: Users,
-      iconColor: "#059669",
-      valueColor: "#2f2f2f",
-    },
   ];
 
   return (

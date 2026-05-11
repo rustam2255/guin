@@ -6,7 +6,7 @@ import InfoCardsGrid from "../../components/OtherPrisonerInfo";
 // import RegionOverviewCards from "../../components/RegionOverwievCards"
 import { useDashboardFiltersStore } from "../../shared/store/dashboard-filters.store";
 import { useDashboardGender } from "../../entities/dashboard/hooks/use-dashboard-gender";
-import { Activity, UserCheck, Users } from "lucide-react";
+import { Activity, AlertTriangle, Globe, UserCheck, Users } from "lucide-react";
 import DashboardStatsGrid from "../../components/DashboardStatsGrid";
 import { useDashboardObjectType } from "../../entities/dashboardObjectType/hook/use-dashboard-object.api";
 import { useDashboardDisease } from "../../entities/disease/hooks/use-dashboard-disease";
@@ -26,6 +26,7 @@ import { useStatusBreakdown } from "../../entities/regionForDashboard/hooks/use-
 import { useTranslation } from "react-i18next";
 import { useAttendanceObjectLevel } from "../../entities/attendance/api/use-attendance.api";
 import { useCameraEvents } from "../../entities/events/api/useCameraEvents";
+import { usePrisonersList } from "../../entities/prisoners/api/use-prisoners.api";
 export default function DashboardPage() {
   const role = useAuthStore((state) => state.profile?.role);
   const { appliedFilters } = useDashboardFiltersStore();
@@ -63,6 +64,7 @@ export default function DashboardPage() {
   } = useDashboardGender(apiFilters);
   console.log(genderData);
   const objectLevelQuery = useAttendanceObjectLevel(role, apiFilters);
+  const prisonersQuery = usePrisonersList(role, apiFilters);
   console.log(objectLevelQuery.data);
   const cameraEventsQuery = useCameraEvents(role, apiFilters);
   const totalCameraEventsCount = cameraEventsQuery.data?.count ?? 0;
@@ -100,17 +102,52 @@ export default function DashboardPage() {
     UsersIcon: Users,
     UserCheckIcon: UserCheck,
   });
+  const propensityPrisonersCount = useMemo(() => {
+    const prisoners = prisonersQuery.data?.results ?? [];
+
+    return prisoners.filter((prisoner: any) => {
+      return Array.isArray(prisoner?.propensities) && prisoner.propensities.length > 0;
+    }).length;
+  }, [prisonersQuery.data?.results]);
   const attendanceNotPassedCount = useMemo(() => {
     const items = objectLevelQuery.data?.items ?? [];
 
     return items.reduce((sum, item) => {
-      return sum + Number(item.missed_count || 0);
+      return sum + Number(item.total_prisoners-item.present_count || 0);
     }, 0);
   }, [objectLevelQuery.data?.items]);
+
+  const foreignCitizensCount = useMemo(() => {
+    const prisoners = prisonersQuery.data?.results ?? [];
+
+    return prisoners.filter((prisoner: any) => {
+      const citizenship = String(prisoner?.citizenship ?? "")
+        .trim()
+        .toLowerCase();
+
+      return citizenship !== "" && citizenship !== "uzbekistan";
+    }).length;
+  }, [prisonersQuery.data?.results]);
 
   const dashboardStatsItems = useMemo(() => {
     return [
       ...genderStatsItems,
+      {
+        id: "foreign-citizens",
+        label: "Chet el fuqarolari",
+        value: foreignCitizensCount,
+        icon: Globe,
+        iconColor: "text-yellow-500",
+        valueColor: "text-yellow-600",
+      },
+      {
+        id: "propensity-prisoners",
+        label: "Moyilligi bor mahbuslar",
+        value: propensityPrisonersCount,
+        icon: AlertTriangle,
+        iconColor: "text-orange-500",
+        valueColor: "text-orange-600",
+      },
       {
         id: "attendance-not-passed",
         label: "Yo‘qlamadan o‘tmaganlar",
@@ -128,7 +165,13 @@ export default function DashboardPage() {
         valueColor: "text-blue-600",
       },
     ];
-  }, [genderStatsItems, attendanceNotPassedCount, totalCameraEventsCount]);
+  }, [
+    genderStatsItems,
+    foreignCitizensCount,
+    attendanceNotPassedCount,
+    propensityPrisonersCount,
+    totalCameraEventsCount,
+  ]);
   const breakdownDoughnutItems = useMemo(() => {
     if (role === "KALONIYA_ADMIN") {
       const colors = [
