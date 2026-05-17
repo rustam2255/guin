@@ -109,6 +109,7 @@ export default function DashboardPage() {
       return Array.isArray(prisoner?.propensities) && prisoner.propensities.length > 0;
     }).length;
   }, [prisonersQuery.data?.results]);
+console.log(prisonersQuery.data?.results);
   const attendanceNotPassedCount = useMemo(() => {
     const items = objectLevelQuery.data?.items ?? [];
 
@@ -266,7 +267,7 @@ export default function DashboardPage() {
         ) : statusError ? (
           <div className="rounded-3xl bg-white p-5 shadow-sm sm:p-6 lg:p-7 2xl:p-8 min-[1800px]:p-10">
             <div className="text-sm text-red-500 2xl:text-base">
-              Obyekt turlari bo‘yicha statistika yuklanmadi
+              {t("dashboard.gender_error")}
             </div>
           </div>
         ) : (
@@ -307,7 +308,7 @@ export default function DashboardPage() {
           ) : objectTypeError ? (
             <div className="rounded-3xl bg-white p-5 shadow-sm sm:p-6 lg:p-7 2xl:p-8 min-[1800px]:p-10">
               <div className="text-sm text-red-500 2xl:text-base">
-                {t("dashboard.object_type_error")}
+                {t("dashboard.gender_error")}
               </div>
             </div>
           ) : (
@@ -351,7 +352,7 @@ export default function DashboardPage() {
             </div>
           ) : diseaseError ? (
             <div className="   text-sm text-red-500   2xl:text-base">
-              Kasalliklar bo‘yicha ma&apos;lumotlar yuklanmadi
+              {t("dashboard.gender_error")}
             </div>
           ) : diseaseItems.length === 0 ? (
             <div className="  text-sm text-gray-500   2xl:text-base">

@@ -24,6 +24,11 @@ export type CameraStreamResponse = {
   client_id: string;
   live_url: string;
 };
+export type StopCameraStreamResponse = {
+  client_id: string;
+  service_response: Record<string, unknown>;
+};
+
 
 function getCamerasEndpointByRole(role: UserRole) {
   switch (role) {
@@ -51,6 +56,13 @@ export async function getCamerasByRole(role: UserRole) {
 export async function getCameraStreamUrl(cameraId: string | number) {
   const res = await $api.get<CameraStreamResponse>(
     `/live-camera/cameras/${cameraId}/stream-url/`
+  );
+
+  return res.data;
+}
+export async function stopCameraStream() {
+  const res = await $api.post<StopCameraStreamResponse>(
+    "/live-camera/stop-stream/"
   );
 
   return res.data;

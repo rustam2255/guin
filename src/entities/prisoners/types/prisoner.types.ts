@@ -11,6 +11,13 @@ export type PrisonerParams = {
   status?: string;
   gender?: string;
   danger_level?: string;
+  smena?: string; 
+  propensity?: string; 
+  has_disease?: boolean;
+  has_propensity?: boolean
+  disease?: string;
+  created_at_after?: string;
+  created_at_before?: string;
 };
 
 export type PrisonerReference = {
@@ -19,7 +26,12 @@ export type PrisonerReference = {
 };
 
 export type PrisonerStatus = PrisonerReference | string | null;
-
+export interface Propensity {
+  id: number;
+  name: string;
+  degree: string;
+  description: string;
+}
 export type PrisonerListItem = {
   id: number;
 
@@ -52,7 +64,8 @@ export type PrisonerListItem = {
 
   family_info?: string | null;
   emergency_contact_person?: string | null;
-
+    propensities: Propensity[];
+  
   date_of_sentencing?: string | null;
   sentence_end_date?: string | null;
   escape_attempts?: number | string | null;

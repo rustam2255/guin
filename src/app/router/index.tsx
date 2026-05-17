@@ -12,7 +12,7 @@ import InspectionDetailPage from "../../pages/count/inspection-detail";
 
 
 import CamerasPage from "../../pages/camera/cameras-page";
-import CameraLivePage from "../../pages/camera/camera-live-page";
+// import CameraLivePage from "../../pages/camera/camera-live-page";
 
 export default function AppRouter() {
   const { isAuthenticated } = useCurrentUser();
@@ -73,7 +73,7 @@ export default function AppRouter() {
           }
         />
 
-        <Route path="/camera/:cameraId" element={<CameraLivePage />} />
+       
         <Route path="/camera" element={<CamerasPage />} />
         <Route
           path="/registry/:id"

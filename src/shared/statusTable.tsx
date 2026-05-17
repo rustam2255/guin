@@ -43,7 +43,7 @@ const StatusTable = ({ data }: Props) => {
               </div>
 
               <div className={columnClass}>
-                <span className="truncate">{item.province}</span>
+                <span className="truncate">{item.province_name}</span>
               </div>
 
               <div className={columnClass}>

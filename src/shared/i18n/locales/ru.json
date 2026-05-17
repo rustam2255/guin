@@ -98,7 +98,7 @@
     "production": "В производстве",
     "contract_object": "В договорных объектах",
     "sick": "Больные",
-  
+   "gender_error_ru": "Произошла ошибка при получении данных",
   "by_gender_short": "По полу",
   "gender": "Пол"
 

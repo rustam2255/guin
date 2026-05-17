@@ -24,6 +24,7 @@ export type TableItem = {
   statusColor: string;
   total: number;
   totalAll: number;
+  province_name: string;
   present: number;
   pending: number;
   attendanceTimeId: number;
@@ -134,7 +135,7 @@ export default function TablePage() {
   ]);
 
   const objectLevelQuery = useAttendanceObjectLevel(role, objectParams);
-
+  console.log("objectLevelQuery", objectLevelQuery.data); 
   const objectLevelItems = useMemo(() => {
     return objectLevelQuery.data?.items ?? [];
   }, [objectLevelQuery.data?.items]);
@@ -211,6 +212,7 @@ export default function TablePage() {
         id: index + 1,
         attendanceTimeId: item.attendance_time_id,
         region: item.region?.name || item.region_name || "-",
+        province_name: item.province_name || "-",
         province: item.colony?.province_id
           ? `${t("filters.province")} ${item.colony.province_id}`
           : "-",

@@ -79,6 +79,7 @@ export type AttendanceObjectLevelItem = {
   region_name?: string;
   colony_name?: string;
   object_name?: string;
+  province_name?: string;
 
   attendance_object_id: number;
   total_prisoners: number;

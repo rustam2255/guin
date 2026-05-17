@@ -101,7 +101,8 @@
     "contract_object": "Shartnoma obyektida",
     "sick": "Kasal",
      "by_gender_short": "Jinsi bo‘yicha",
-  "gender": "Jinsi"
+  "gender": "Jinsi",
+  "gender_error": "Ma'lumotlarni olishda xatolik yuz berdi"
   },
   "profile": {
     "full_name": "F.I.O",
