@@ -129,9 +129,9 @@ export default function LoginPage() {
   2xl:text-[48px]
   "
           >
-            Raqamli
+            Masofaviy
             <br />
-            Nazoratchi
+            Nazorat
           </h1>
         </div>
 
