@@ -9,6 +9,7 @@ import DashboardFiltersBar from "../../features/dashboard-filters/ui/dashboard-f
 import { usePrisonersList } from "../../entities/prisoners/api/use-prisoners.api";
 import { useStatusCount } from "../../entities/dashboardStatus/hooks/use-dashboard-status";
 import { useDashboardDisease } from "../../entities/disease/hooks/use-dashboard-disease";
+import { PrisonerService } from "../../entities/prisoners/api/prisoner.service";
 
 function formatDate(value?: string | null) {
   if (!value) return "-";
@@ -52,6 +53,7 @@ export default function RegistryPage() {
     disease: "",
   });
 
+
   const params = useMemo(() => {
     return {
       limit,
@@ -90,6 +92,29 @@ export default function RegistryPage() {
 
   const canPrev = offset > 0;
   const canNext = offset + limit < count;
+    const handleExport = async () => {
+  try {
+    const blob = await PrisonerService.exportExcel(role, params);
+
+    const url = window.URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = `mahkumlar-${Date.now()}.xlsx`;
+
+    document.body.appendChild(link);
+
+    link.click();
+
+    link.remove();
+
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error(error);
+  }
+};
 
   return (
     <DashboardLayout>
@@ -247,7 +272,7 @@ export default function RegistryPage() {
               </div>
 
               <div className="flex-1" />
-              <button className="h-10 shrink-0 rounded-xl bg-[#18b368] px-4 text-sm font-medium text-white hover:bg-[#139357] flex items-center gap-1.5">
+              <button onClick={handleExport} className="h-10 shrink-0 rounded-xl bg-[#18b368] px-4 text-sm font-medium text-white hover:bg-[#139357] flex items-center gap-1.5">
                 <svg width="13" height="13" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>

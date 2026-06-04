@@ -14,7 +14,8 @@ export type PrisonerParams = {
   smena?: string; 
   propensity?: string; 
   has_disease?: boolean;
-  has_propensity?: boolean
+  has_propensity?: boolean;
+  export?: "xlsx";
   disease?: string;
   created_at_after?: string;
   created_at_before?: string;

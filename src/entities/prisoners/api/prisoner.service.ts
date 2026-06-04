@@ -21,4 +21,19 @@ export const PrisonerService = {
 
     return data;
   },
+
+  async exportExcel(role: string | undefined, params: PrisonerParams) {
+    const response = await $api.get(
+      getPrisonerEndpoint(role),
+      {
+        params: {
+          ...params,
+          export: "xlsx",
+        },
+        responseType: "blob",
+      }
+    );
+
+    return response.data;
+  },
 };
