@@ -8,15 +8,14 @@ export function useLogin() {
   return useMutation({
     mutationFn: AuthService.login,
     onSuccess: (data) => {
-      console.log("onSuccess data:", data);
+     
 
       setTokens({
         access: data.access,
         refresh: data.refresh,
       });
     },
-    onError: (error) => {
-      console.log("LOGIN ERROR:", error);
+    onError: (_error) => {
     },
   });
 }

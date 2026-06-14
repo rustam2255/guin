@@ -12,6 +12,10 @@ export type AttendanceDashboardParams = {
   attendance_time?: number | string;
   date?: string;
 
+
+  limit?: number;   
+  offset?: number; 
+
   region?: number | string;
   colony?: number | string;
   object?: number | string;

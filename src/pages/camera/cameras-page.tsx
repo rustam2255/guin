@@ -15,10 +15,10 @@ export default function CamerasPage() {
   const profile = useAuthStore((state) => state.profile);
   const role = (profile?.role ?? "SUPERADMIN") as UserRole;
 
-  // 1. Kameralar ro'yxatini yuklash
+
   const { data, isLoading, isError } = useCamerasByRole(role);
 
-  // TAQDIMOT UCHUN: Kamera 1 (id: 1) har doim eng birinchi bo'lib kelishi mantiqi
+
   const cameras = useMemo(() => {
     const rawCameras = data?.items ?? [];
     return [...rawCameras].sort((a, b) => {
@@ -30,7 +30,7 @@ export default function CamerasPage() {
 
   const [selectedCameraId, setSelectedCameraId] = useState<string | number | null>(null);
 
-  // Unmount paytida oxirgi faol ID ni eslab qolish uchun Ref
+
   const selectedCameraIdRef = useRef<string | number | null>(null);
   useEffect(() => {
     selectedCameraIdRef.current = selectedCameraId;
@@ -38,14 +38,13 @@ export default function CamerasPage() {
 
   const stopStream = useStopCameraStream();
 
-  // 2. Birinchi kamerani avtomatik tanlash (id: 1 birinchi bo'lgani uchun Kamera 1 yonadi)
   useEffect(() => {
     if (cameras.length > 0 && selectedCameraId === null) {
       setSelectedCameraId(cameras[0].id);
     }
   }, [cameras, selectedCameraId]);
 
-  // 3. Aktiv kamera oqimini olish
+
   const {
     data: streamData,
     isLoading: streamLoading,
@@ -53,7 +52,7 @@ export default function CamerasPage() {
     isError: streamError,
   } = useCameraStream(selectedCameraId);
 
-  /* Kamerani almashtirish funksiyasi */
+
   const handleSelectCamera = useCallback(async (cameraId: number | string) => {
     if (selectedCameraIdRef.current === cameraId) return;
 
@@ -68,7 +67,7 @@ export default function CamerasPage() {
     setSelectedCameraId(cameraId);
   }, [stopStream]);
 
-  /* Sahifadan chiqib ketganda tozalash */
+
   useEffect(() => {
     return () => {
       if (selectedCameraIdRef.current) {
@@ -82,7 +81,7 @@ export default function CamerasPage() {
       <div className="min-h-screen w-full bg-[#f5f6fa] p-3 sm:p-4">
         <div className="mx-auto max-w-[2200px] space-y-4">
 
-          {/* HEADER */}
+   
           <div className="rounded-2xl bg-white px-5 py-4 shadow-sm">
             <h1 className="text-xl font-semibold text-[#101828]">Kameralar</h1>
             <p className="mt-1 text-sm text-gray-500">
@@ -90,7 +89,7 @@ export default function CamerasPage() {
             </p>
           </div>
 
-          {/* LOADING & ERROR STATES */}
+
           {isLoading ? (
             <div className="flex h-52 items-center justify-center rounded-2xl bg-white shadow-sm">
               <Loader2 className="mr-2 h-6 w-6 animate-spin text-[#1565d8]" />
@@ -108,7 +107,7 @@ export default function CamerasPage() {
             </div>
           ) : (
             <>
-              {/* CAMERA BUTTONS */}
+    
               <div className="grid grid-cols-2 gap-3 rounded-2xl bg-white p-4 shadow-sm sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">
                 {cameras.map((camera) => {
                   const active = selectedCameraId === camera.id;
@@ -130,11 +129,8 @@ export default function CamerasPage() {
                 })}
               </div>
 
-              {/* LIVE VIEWER CONTAINER */}
-              {/* aspect-video olib tashlandi va aniq balandlik o'rnatildi, ichidagi kontent to'liq yoyiladi */}
               <div className="relative w-full h-[50vh] sm:h-[60vh] md:h-[70vh] lg:h-[78vh] overflow-hidden rounded-2xl bg-black shadow-sm">
 
-                {/* Loader overlay */}
                 {(streamLoading || streamFetching || !selectedCameraId) && (
                   <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/60 backdrop-blur-sm">
                     <Loader2 className="mr-2 h-7 w-7 animate-spin text-white" />
@@ -142,7 +138,7 @@ export default function CamerasPage() {
                   </div>
                 )}
 
-                {/* Xatolik holati */}
+  
                 {selectedCameraId && (streamError || !streamData?.live_url) ? (
                   <div className="flex h-full flex-col items-center justify-center text-white">
                     <VideoOff className="mb-3 h-12 w-12 text-red-400" />
@@ -151,16 +147,13 @@ export default function CamerasPage() {
                     </p>
                   </div>
                 ) : (
-                  // Iframe va uning ichidagi videoni majburlab 100% qoplatish (Stretch)
+         
                   streamData?.live_url && (
                     <iframe
                       key={selectedCameraId}
                       src={streamData.live_url}
                       title={streamData.camera?.name || "Live Camera"}
-                      /* scale-[1.8] - videoni 1.8 barobar vizual kattalashtiradi. 
-                        origin-top-left - kattalashish chap burchakdan boshlanadi.
-                        Balandlik va enini 180% qilib, scale bilan to'g'rilaymiz.
-                      */
+      
                       className="absolute top-0 left-0 border-0 scale-[1.7] origin-top-left"
                       style={{ width: "100%", height: "100%" }}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"

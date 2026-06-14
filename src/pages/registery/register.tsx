@@ -281,7 +281,6 @@ export default function RegistryPage() {
             </div>
           </div>
 
-          {/* Mahkumlar jadvali va qolgan qismlar (O'zgarishsiz qoldi) */}
           <div className="overflow-hidden rounded-2xl bg-white shadow-sm">
             {prisonersQuery.isLoading ? (
               <div className="px-4 py-10 text-center text-sm text-gray-500">

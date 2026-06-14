@@ -156,7 +156,7 @@ export const FilterService = {
 
       case "KALONIYA_ADMIN": {
         const { data } = await $api.get("/common/manzil-koloniya/dashboard/objects/");
-        console.log(data);
+    
         
         return normalizeList<ObjectItem>(data);
       }
