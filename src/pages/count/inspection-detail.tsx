@@ -50,16 +50,16 @@ export default function InspectionDetailPage() {
     (state) => state.appliedFilters
   );
 
-  // Qidiruv holatlari
+
   const [search, setSearch] = useState("");
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [resultStatus, setResultStatus] = useState<AttendanceResultStatus>("");
 
-  // Server Pagination
+
   const [limit] = useState(20);
   const [offset, setOffset] = useState(0);
 
-  // API parametrlari (Qidiruvni yubormaymiz, chunki backendda yo'q deb hisoblaymiz)
+
   const params = useMemo(() => {
     return {
       attendance_time: attendanceTimeId,
@@ -89,7 +89,7 @@ export default function InspectionDetailPage() {
     setSubmittedSearch(search.trim());
   };
 
-  // KELGAN 20 TA ELEMENTNI FRONTENDDA QIDIRISH
+
   const filteredItems = useMemo(() => {
     const value = submittedSearch.trim().toLowerCase();
     if (!value) return serverItems;
@@ -105,7 +105,7 @@ export default function InspectionDetailPage() {
   }, [serverItems, submittedSearch]);
 
   const canPrev = offset > 0;
-  // Agar qidiruv yozilgan bo'lsa, keyingi sahifaga o'tishni cheklaymiz (chunki ma'lumot qisqargan bo'lishi mumkin)
+
   const canNext = submittedSearch ? false : offset + limit < totalCount;
 
   const presentCount = serverItems.filter((item) => item.result_status === "present").length;
