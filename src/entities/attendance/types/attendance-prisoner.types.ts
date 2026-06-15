@@ -10,6 +10,9 @@ export type AttendancePrisonerLevelParams = {
   session_status?: string;
   time_type?: string;
   result_status?: AttendanceResultStatus;
+  limit?: number;  
+  offset?: number; 
+  search?: string;
 };
 
 export type AttendancePrisonerLevelItem = {

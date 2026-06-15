@@ -1,4 +1,4 @@
-import {  useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { ArrowDownIcon, ArrowLeft, Camera } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -37,8 +37,7 @@ function formatDateTime(value?: string | null, lang: string = "uz") {
 
 export default function InspectionDetailPage() {
   const { t, i18n } = useTranslation();
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const { attendanceTimeId } = useParams();
   const location = useLocation();
 
@@ -51,12 +50,16 @@ export default function InspectionDetailPage() {
     (state) => state.appliedFilters
   );
 
+  // Qidiruv holatlari
   const [search, setSearch] = useState("");
   const [submittedSearch, setSubmittedSearch] = useState("");
   const [resultStatus, setResultStatus] = useState<AttendanceResultStatus>("");
+
+  // Server Pagination
   const [limit] = useState(20);
   const [offset, setOffset] = useState(0);
 
+  // API parametrlari (Qidiruvni yubormaymiz, chunki backendda yo'q deb hisoblaymiz)
   const params = useMemo(() => {
     return {
       attendance_time: attendanceTimeId,
@@ -64,6 +67,8 @@ export default function InspectionDetailPage() {
       colony: appliedFilters.colonyId || undefined,
       object: appliedFilters.placeObjectId || undefined,
       result_status: resultStatus || undefined,
+      limit: limit,
+      offset: offset,
     };
   }, [
     attendanceTimeId,
@@ -71,23 +76,25 @@ export default function InspectionDetailPage() {
     appliedFilters.colonyId,
     appliedFilters.placeObjectId,
     resultStatus,
+    limit,
+    offset,
   ]);
 
   const prisonerQuery = useAttendancePrisonerLevel(role, params);
 
-  const items = prisonerQuery.data?.items ?? [];
+  const serverItems = prisonerQuery.data?.items ?? [];
+  const totalCount = prisonerQuery.data?.count ?? 0;
 
   const handleSearch = () => {
-    setOffset(0);
     setSubmittedSearch(search.trim());
   };
 
+  // KELGAN 20 TA ELEMENTNI FRONTENDDA QIDIRISH
   const filteredItems = useMemo(() => {
     const value = submittedSearch.trim().toLowerCase();
+    if (!value) return serverItems;
 
-    if (!value) return items;
-
-    return items.filter((item) => {
+    return serverItems.filter((item) => {
       return (
         item.prisoner?.full_name?.toLowerCase().includes(value) ||
         item.prisoner?.face_employee_no?.toLowerCase().includes(value) ||
@@ -95,34 +102,23 @@ export default function InspectionDetailPage() {
         item.colony_name?.toLowerCase().includes(value)
       );
     });
-  }, [items, submittedSearch]);
+  }, [serverItems, submittedSearch]);
 
-  const paginatedItems = useMemo(() => {
-    return filteredItems.slice(offset, offset + limit);
-  }, [filteredItems, offset, limit]);
-
-  const count = filteredItems.length;
   const canPrev = offset > 0;
-  const canNext = offset + limit < count;
+  // Agar qidiruv yozilgan bo'lsa, keyingi sahifaga o'tishni cheklaymiz (chunki ma'lumot qisqargan bo'lishi mumkin)
+  const canNext = submittedSearch ? false : offset + limit < totalCount;
 
-  const presentCount = items.filter(
-    (item) => item.result_status === "present"
-  ).length;
+  const presentCount = serverItems.filter((item) => item.result_status === "present").length;
+  const missedCount = serverItems.filter((item) => item.result_status === "missed").length;
+  const pendingCount = serverItems.filter((item) => item.result_status === "pending").length;
 
-  const missedCount = items.filter(
-    (item) => item.result_status === "missed"
-  ).length;
-
-  const pendingCount = items.filter(
-    (item) => item.result_status === "pending"
-  ).length;
-
-  const firstItem = items[0];
+  const firstItem = serverItems[0];
 
   return (
     <DashboardLayout>
-      <div className="min-h-screen mx-auto w-full max-w-[2200px]  bg-[#f5f6fa]">
+      <div className="min-h-screen mx-auto w-full max-w-[2200px] bg-[#f5f6fa]">
         <div className="space-y-4">
+          
           <div className="flex flex-col gap-4 rounded-2xl bg-white px-4 py-4 shadow-sm lg:flex-row lg:items-center lg:justify-between">
             <div>
               <h1 className="text-lg font-semibold text-[#101828] sm:text-xl">
@@ -132,15 +128,7 @@ export default function InspectionDetailPage() {
             <div className="flex gap-6">
               <button
                 onClick={() => navigate(`/camera`)}
-                className="
-    flex items-center cursor-pointer justify-center
-    rounded-xl bg-blue-50 text-blue-600
-    hover:bg-blue-100 transition
-    h-5  w-10
-    sm:h-5 sm:w-11
-    lg:h-7 lg:w-12
-    2xl:h-11 2xl:w-14
-  "
+                className="flex items-center cursor-pointer justify-center rounded-xl bg-blue-50 text-blue-600 hover:bg-blue-100 transition h-5 w-10 sm:h-5 sm:w-11 lg:h-7 lg:w-12 2xl:h-11 2xl:w-14"
               >
                 <Camera className="h-5 w-5" />
               </button>
@@ -153,26 +141,13 @@ export default function InspectionDetailPage() {
                 {t("common.back")}
               </Link>
             </div>
-
           </div>
 
           <div className="rounded-2xl bg-white p-4 shadow-sm sm:p-5">
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
-              <InfoCard
-                title={t("filters.region")}
-                value={attendance?.region || firstItem?.region_name || "-"}
-              />
-
-              <InfoCard
-                title={t("filters.colony")}
-                value={attendance?.colony || firstItem?.colony_name || "-"}
-              />
-
-              <InfoCard
-                title={t("inspection_detail.object")}
-                value={attendance?.object || firstItem?.object_name || "-"}
-              />
-
+              <InfoCard title={t("filters.region")} value={attendance?.region || firstItem?.region_name || "-"} />
+              <InfoCard title={t("filters.colony")} value={attendance?.colony || firstItem?.colony_name || "-"} />
+              <InfoCard title={t("inspection_detail.object")} value={attendance?.object || firstItem?.object_name || "-"} />
               <InfoCard
                 title={t("inspection_detail.date_time")}
                 value={
@@ -187,25 +162,10 @@ export default function InspectionDetailPage() {
           </div>
 
           <div className="grid grid-cols-2 gap-3 xl:grid-cols-4">
-            <StatCard title={t("common.total")} value={items.length} />
-
-            <StatCard
-              title={t("attendance_status.present")}
-              value={presentCount}
-              color="text-[#17b26a]"
-            />
-
-            <StatCard
-              title={t("attendance_status.missed")}
-              value={missedCount}
-              color="text-red-500"
-            />
-
-            <StatCard
-              title={t("attendance_status.pending")}
-              value={pendingCount}
-              color="text-yellow-500"
-            />
+            <StatCard title={t("common.total")} value={totalCount} />
+            <StatCard title={t("attendance_status.present")} value={presentCount} color="text-[#17b26a]" />
+            <StatCard title={t("attendance_status.missed")} value={missedCount} color="text-red-500" />
+            <StatCard title={t("attendance_status.pending")} value={pendingCount} color="text-yellow-500" />
           </div>
 
           <div className="flex flex-col gap-3 rounded-2xl bg-white px-4 py-4 shadow-sm xl:flex-row xl:items-center xl:justify-between">
@@ -215,10 +175,8 @@ export default function InspectionDetailPage() {
                 onChange={(e) => {
                   const value = e.target.value;
                   setSearch(value);
-
                   if (!value.trim()) {
                     setSubmittedSearch("");
-                    setOffset(0);
                   }
                 }}
                 onKeyDown={(e) => {
@@ -246,17 +204,10 @@ export default function InspectionDetailPage() {
                   className="h-10 w-full appearance-none rounded-xl border border-gray-200 bg-white px-4 pr-10 text-sm outline-none focus:border-[#1565d8] sm:w-[180px] xl:h-11"
                 >
                   <option value="">{t("common.all")}</option>
-                  <option value="present">
-                    {t("attendance_status.present")}
-                  </option>
-                  <option value="missed">
-                    {t("attendance_status.missed")}
-                  </option>
-                  <option value="pending">
-                    {t("attendance_status.pending")}
-                  </option>
+                  <option value="present">{t("attendance_status.present")}</option>
+                  <option value="missed">{t("attendance_status.missed")}</option>
+                  <option value="pending">{t("attendance_status.pending")}</option>
                 </select>
-
                 <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-gray-500">
                   <ArrowDownIcon size={18} />
                 </div>
@@ -265,7 +216,7 @@ export default function InspectionDetailPage() {
 
             <div className="flex h-10 min-w-[140px] items-center justify-between rounded-xl border border-gray-200 bg-white px-4 text-sm text-gray-700 xl:h-11">
               <span>{t("registry.prisoners")}:</span>
-              <span className="font-semibold text-gray-900">{count}</span>
+              <span className="font-semibold text-gray-900">{submittedSearch ? filteredItems.length : totalCount}</span>
             </div>
           </div>
 
@@ -274,114 +225,52 @@ export default function InspectionDetailPage() {
               <table className="w-full min-w-[760px] border-separate border-spacing-0 xl:min-w-[980px]">
                 <thead>
                   <tr className="bg-[#f8f9fb] text-left text-[11px] font-semibold text-[#344054] xl:text-[13px]">
-                    <th className="w-[45px] border-b border-gray-200 px-2 py-3 text-center xl:px-4 xl:py-4">
-                      {t("table.id")}
-                    </th>
-                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">
-                      {t("registry.full_name")}
-                    </th>
-                    <th className="w-[80px] border-b border-gray-200 px-2 py-3 xl:w-[100px] xl:px-4 xl:py-4">
-                      {t("inspection_detail.face_id")}
-                    </th>
-                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[130px] xl:px-4 xl:py-4">
-                      {t("filters.colony")}
-                    </th>
-                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">
-                      {t("inspection_detail.object")}
-                    </th>
-                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">
-                      {t("inspection_detail.date")}
-                    </th>
-                    <th className="w-[120px] border-b border-gray-200 px-2 py-3 xl:w-[150px] xl:px-4 xl:py-4">
-                      {t("inspection_detail.recorded_at")}
-                    </th>
-                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">
-                      {t("table.status")}
-                    </th>
+                    <th className="w-[45px] border-b border-gray-200 px-2 py-3 text-center xl:px-4 xl:py-4">{t("table.id")}</th>
+                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">{t("registry.full_name")}</th>
+                    <th className="w-[80px] border-b border-gray-200 px-2 py-3 xl:w-[100px] xl:px-4 xl:py-4">{t("inspection_detail.face_id")}</th>
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[130px] xl:px-4 xl:py-4">{t("filters.colony")}</th>
+                    <th className="border-b border-gray-200 px-2 py-3 xl:px-4 xl:py-4">{t("inspection_detail.object")}</th>
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">{t("inspection_detail.date")}</th>
+                    <th className="w-[120px] border-b border-gray-200 px-2 py-3 xl:w-[150px] xl:px-4 xl:py-4">{t("inspection_detail.recorded_at")}</th>
+                    <th className="w-[95px] border-b border-gray-200 px-2 py-3 xl:w-[115px] xl:px-4 xl:py-4">{t("table.status")}</th>
                   </tr>
                 </thead>
 
                 <tbody>
                   {prisonerQuery.isLoading ? (
                     <tr>
-                      <td
-                        colSpan={8}
-                        className="px-4 py-8 text-center text-sm text-gray-500"
-                      >
-                        <LoadingSpinner />
-                      </td>
+                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-500"><LoadingSpinner /></td>
                     </tr>
                   ) : prisonerQuery.isError ? (
                     <tr>
-                      <td
-                        colSpan={8}
-                        className="px-4 py-8 text-center text-sm text-red-500"
-                      >
-                        {t("common.error")}
-                      </td>
+                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-red-500">{t("common.error")}</td>
                     </tr>
-                  ) : paginatedItems.length === 0 ? (
+                  ) : filteredItems.length === 0 ? (
                     <tr>
-                      <td
-                        colSpan={8}
-                        className="px-4 py-8 text-center text-sm text-gray-500"
-                      >
-                        {t("common.not_found")}
-                      </td>
+                      <td colSpan={8} className="px-4 py-8 text-center text-sm text-gray-500">{t("common.not_found")}</td>
                     </tr>
                   ) : (
-                    paginatedItems.map((item, index) => (
-                      <tr
-                        key={`${item.attendance_prisoner_id}-${item.prisoner?.id}`}
-                        className="text-[11px] text-[#101828] hover:bg-gray-50 xl:text-sm"
-                      >
-                        <td className="border-b border-gray-100 px-2 py-3 text-center xl:px-4 xl:py-4">
-                          {offset + index + 1}
-                        </td>
-
+                    filteredItems.map((item, index) => (
+                      <tr key={`${item.attendance_prisoner_id}-${item.prisoner?.id}`} className="text-[11px] text-[#101828] hover:bg-gray-50 xl:text-sm">
+                        <td className="border-b border-gray-100 px-2 py-3 text-center xl:px-4 xl:py-4">{offset + index + 1}</td>
                         <td className="max-w-[140px] border-b border-gray-100 px-2 py-3 font-medium xl:max-w-[220px] xl:px-4 xl:py-4">
-                          <span className="block truncate">
-                            {item.prisoner?.full_name || "-"}
-                          </span>
+                          <span className="block truncate">{item.prisoner?.full_name || "-"}</span>
                         </td>
-
                         <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
-                          <span className="block truncate">
-                            {item.prisoner?.face_employee_no || "-"}
-                          </span>
+                          <span className="block truncate">{item.prisoner?.face_employee_no || "-"}</span>
                         </td>
-
                         <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
-                          <span className="block truncate">
-                            {item.colony_name || "-"}
-                          </span>
+                          <span className="block truncate">{item.colony_name || "-"}</span>
                         </td>
-
                         <td className="max-w-[150px] border-b border-gray-100 px-2 py-3 xl:max-w-[240px] xl:px-4 xl:py-4">
-                          <span className="block truncate">
-                            {item.object_name || "-"}
-                          </span>
+                          <span className="block truncate">{item.object_name || "-"}</span>
                         </td>
-
+                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">{item.date || "-"}</td>
                         <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
-                          {item.date || "-"}
+                          <span className="block leading-4">{formatDateTime(item.recorded_at, i18n.language)}</span>
                         </td>
-
-                        <td className="border-b border-gray-100 px-2 py-3 xl:px-4 xl:py-4">
-                          <span className="block leading-4">
-                            {formatDateTime(item.recorded_at, i18n.language)}
-                          </span>
-                        </td>
-
-                        <td
-                          className={`border-b border-gray-100 px-2 py-3 font-semibold xl:px-4 xl:py-4 ${statusClass[item.result_status] || "text-gray-500"
-                            }`}
-                        >
-                          {item.result_status
-                            ? t(`attendance_status.${item.result_status}`, {
-                              defaultValue: item.result_status,
-                            })
-                            : "-"}
+                        <td className={`border-b border-gray-100 px-2 py-3 font-semibold xl:px-4 xl:py-4 ${statusClass[item.result_status] || "text-gray-500"}`}>
+                          {item.result_status ? t(`attendance_status.${item.result_status}`, { defaultValue: item.result_status }) : "-"}
                         </td>
                       </tr>
                     ))
@@ -392,8 +281,7 @@ export default function InspectionDetailPage() {
 
             <div className="flex flex-col gap-3 border-t border-gray-100 px-4 py-4 sm:flex-row sm:items-center sm:justify-between">
               <p className="text-sm text-gray-600">
-                {t("common.total")}:{" "}
-                <span className="font-semibold text-gray-900">{count}</span>
+                {t("common.total")}: <span className="font-semibold text-gray-900">{submittedSearch ? filteredItems.length : totalCount}</span>
               </p>
 
               <div className="flex items-center gap-2">
@@ -427,22 +315,12 @@ function InfoCard({ title, value }: { title: string; value: string }) {
   return (
     <div className="rounded-xl border border-gray-200 bg-[#f8f9fb] px-3 py-3 sm:px-4">
       <p className="text-xs text-gray-500 sm:text-sm">{title}</p>
-      <p className="mt-1 truncate text-sm font-semibold text-[#101828]">
-        {value}
-      </p>
+      <p className="mt-1 truncate text-sm font-semibold text-[#101828]">{value}</p>
     </div>
   );
 }
 
-function StatCard({
-  title,
-  value,
-  color = "text-[#101828]",
-}: {
-  title: string;
-  value: number;
-  color?: string;
-}) {
+function StatCard({ title, value, color = "text-[#101828]" }: { title: string; value: number; color?: string }) {
   return (
     <div className="rounded-2xl bg-white px-4 py-3 shadow-sm sm:px-5 sm:py-4">
       <p className="text-xs text-gray-500 sm:text-sm">{title}</p>
