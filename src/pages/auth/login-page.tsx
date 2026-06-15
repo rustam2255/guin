@@ -33,6 +33,13 @@ export default function LoginPage() {
     });
   };
 
+  // Kiritish maydonlarida Enter tugmasi bosilganda formani yuborishni kafolatlash
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSubmit(e as any);
+    }
+  };
+
   useEffect(() => {
     if (isAuthenticated || isSuccess) {
       navigate("/dashboard", { replace: true });
@@ -54,7 +61,7 @@ export default function LoginPage() {
       lg:px-8
       "
     >
-
+      {/* Background dekoratsiyalar */}
       <div className="absolute inset-0">
         <div
           className="
@@ -86,7 +93,7 @@ export default function LoginPage() {
         />
       </div>
 
-
+      {/* Login Form Konteyneri */}
       <div
         className="
         relative z-10 w-full
@@ -96,7 +103,7 @@ export default function LoginPage() {
         2xl:max-w-[520px]
         "
       >
-       
+        {/* Logo va Sarlavha */}
         <div
           className="
           mb-10 flex items-center justify-center gap-4
@@ -130,7 +137,7 @@ export default function LoginPage() {
           </h1>
         </div>
 
-  
+        {/* Form boshlanishi */}
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5 2xl:space-y-6">
           <input
             type="text"
@@ -138,6 +145,7 @@ export default function LoginPage() {
             value={phone}
             maxLength={20}
             onChange={(e) => setPhone(e.target.value)}
+            onKeyDown={handleKeyDown} // Enter hodisasi ulandi
             className="
             w-full rounded-xl
             border-2 border-white/80
@@ -157,6 +165,7 @@ export default function LoginPage() {
             value={password}
             maxLength={20}
             onChange={(e) => setPassword(e.target.value)}
+            onKeyDown={handleKeyDown} // Enter hodisasi ulandi
             className="
             w-full rounded-xl
             border-2 border-white/80
@@ -177,7 +186,6 @@ export default function LoginPage() {
           {isError && !localError && (
             <p className="text-sm font-medium text-red-200">{serverError}</p>
           )}
-
 
           <button
             type="submit"
