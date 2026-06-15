@@ -62,10 +62,10 @@ export default function DashboardPage() {
     isLoading: genderLoading,
     error: genderError,
   } = useDashboardGender(apiFilters);
-  console.log(genderData);
+
   const objectLevelQuery = useAttendanceObjectLevel(role, apiFilters);
   const prisonersQuery = usePrisonersList(role, apiFilters);
-  console.log(objectLevelQuery.data);
+ 
   const cameraEventsQuery = useCameraEvents(role, apiFilters);
   const totalCameraEventsCount = cameraEventsQuery.data?.count ?? 0;
   const {
@@ -73,7 +73,7 @@ export default function DashboardPage() {
     isLoading: objectTypeLoading,
     error: objectTypeError,
   } = useDashboardObjectType(apiFilters);
-  console.log(objectTypeData);
+
 
   const {
     data: diseaseData,
@@ -94,7 +94,7 @@ export default function DashboardPage() {
 
 
   const objectTypeCards = transformObjectTypeCards(objectTypeData);
-  console.log(objectTypeData);
+ ;
 
 
 
@@ -109,7 +109,7 @@ export default function DashboardPage() {
       return Array.isArray(prisoner?.propensities) && prisoner.propensities.length > 0;
     }).length;
   }, [prisonersQuery.data?.results]);
-console.log(prisonersQuery.data?.results);
+
   const attendanceNotPassedCount = useMemo(() => {
     const items = objectLevelQuery.data?.items ?? [];
 
@@ -143,7 +143,7 @@ console.log(prisonersQuery.data?.results);
       },
       {
         id: "propensity-prisoners",
-        label: "Moyilligi bor mahbuslar",
+        label: "Moyilligi bor mahkumlar",
         value: propensityPrisonersCount,
         icon: AlertTriangle,
         iconColor: "text-orange-500",
